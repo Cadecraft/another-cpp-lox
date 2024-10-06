@@ -2,6 +2,9 @@
 #include <sstream>
 
 #include "lox.h"
+#include "token.h"
+
+bool Lox::hadError = false;
 
 int Lox::runFile(std::string path) {
 	// Read all bytes
@@ -10,7 +13,9 @@ int Lox::runFile(std::string path) {
 		f.open(path);
 		std::stringstream buffer;
 		buffer << f.rdbuf();
-		return run(buffer.str());
+		run(buffer.str());
+		if (hadError) return 65;
+		else return 0;
 	} catch (...) {
 		// Failed to read file
 		return 1;
@@ -29,15 +34,31 @@ int Lox::runPrompt() {
 			return 0;
 		}
 		run(line);
+		// Do not kill the session in the interactive loop
+		hadError = false;
 	}
 	// Finished
 	return 0;
+}
+
+void Lox::report(int line, std::string where, std::string message) {
+	std::cout << "[line " << line << "] Error" << where << ": " << message << std::endl;
+}
+
+void Lox::error(int line, std::string message) {
+	report(line, "", message);
+	hadError = true;
 }
 
 int Lox::run(std::string s) {
 	// Run
 	std::cout << "DBG: Running: " << std::endl;
 	std::cout << s << std::endl;
+
+	// Step 1: scan into a list of tokens
+
+	// DBG: print the tokens
+
 	// Finished
 	return 0;
 }
