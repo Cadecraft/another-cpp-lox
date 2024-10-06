@@ -12,6 +12,8 @@ In the book, Lox is implemented in Java and C; Lox has been implemented in C++ b
 
 This project is in-progress and does not yet fully meet the Lox specification! Use at your own risk.
 
+Because this is being developed during my first read-through of the book, there may be some code quality issues, but I will work to address them.
+
 ## Building and usage
 
 Clone this repository and run `make` to produce the `cpplox` executable using `g++`. The project's only dependency should be the C++ standard library.

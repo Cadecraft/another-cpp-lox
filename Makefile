@@ -1,2 +1,2 @@
 all:
-	g++ -g -Wall -o anothercpplox main.cpp lox.cpp
+	g++ -g -Wall -o anothercpplox src/main.cpp src/lox.cpp
