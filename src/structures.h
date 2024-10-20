@@ -1,5 +1,7 @@
 // Data structures
 
+#include <string>
+
 // The token type
 enum class TokenType {
 	// Single-character tokens
@@ -45,4 +47,11 @@ enum class TokenType {
 	Var,
 	While,
 	EndOfFile
+};
+
+// The type of a lox object, which can be a string, integer, or other value
+enum class LoxObjectType {
+	String,
+	Integer,
+	Empty
 };

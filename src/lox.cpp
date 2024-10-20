@@ -3,6 +3,7 @@
 
 #include "lox.h"
 #include "token.h"
+#include "scanner.h"
 
 bool Lox::hadError = false;
 

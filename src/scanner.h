@@ -15,7 +15,7 @@ private:
 	
 	// Return whether we have consumed all the characters
 	bool isAtEnd() {
-		return current >= source.length();
+		return current >= ((int) source.length());
 	}
 
 	// Return the current then advance ahead
@@ -26,14 +26,16 @@ private:
 
 	// Add a token of a specific type
 	void addToken(TokenType type) {
-		addToken(type, nullptr);
+		LoxObject l;
+		addToken(type, l);
 	}
 
 	// Add a token
-	void addToken(TokenType type, int literal) {
+	// Literal is allowed to be a string, int, or other object (TODO: refactor)
+	void addToken(TokenType type, LoxObject literal) {
 		// TODO: impl
 		std::string text = source.substr(start, current - start + 1);
-		tokens.add(new Token(type, text, literal, line));
+		tokens.push_back(new Token(type, text, literal, line));
 	}
 	
 	// Check if match, and if so, consume the current character (like conditional version of `advance()`)
@@ -50,7 +52,7 @@ private:
 		return source[current];
 	}
 	
-	private void string() {
+	void string() {
 		while (peek() != '"' && !isAtEnd()) {
 			if (peek() == '\n') line++;
 			advance();
@@ -156,7 +158,8 @@ public:
 			start = current;
 			scanToken();
 		}
-		// TODO: fix
-		tokens.push_back(new Token(TokenType::EndOfFile, "", /* NULLPTR */, line));
+		// Empty token
+		LoxObject l;
+		tokens.push_back(new Token(TokenType::EndOfFile, "", l, line));
 	}
 };
