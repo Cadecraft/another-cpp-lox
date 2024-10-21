@@ -57,6 +57,8 @@ int Lox::run(std::string s) {
 	std::cout << s << std::endl;
 
 	// Step 1: scan into a list of tokens
+	Scanner scanner(s);
+	scanner.scanTokens();
 
 	// DBG: print the tokens
 
