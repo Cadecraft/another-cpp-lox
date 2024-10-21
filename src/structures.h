@@ -1,3 +1,5 @@
+#pragma once
+
 // Data structures
 
 #include <string>

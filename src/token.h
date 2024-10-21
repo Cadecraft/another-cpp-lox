@@ -1,3 +1,5 @@
+#pragma once
+
 #include <string>
 
 #include "structures.h"
@@ -13,17 +15,8 @@ private:
 
 public:
 	// Create the token
-	Token(TokenType type, std::string lexeme, LoxObject literal, int line) {
-		this->type = type;
-		this->lexeme = lexeme;
-		this->literal = literal;
-		this->line = line;
-	}
+	Token(TokenType type, std::string lexeme, LoxObject literal, int line);
 
 	// Stringify the token
-	std::string toString() {
-		// Cannot display the type
-		// TODO: fix
-		return lexeme + " " + literal.toString();
-	}
+	std::string toString();
 };
