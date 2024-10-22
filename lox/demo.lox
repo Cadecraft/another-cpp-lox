@@ -1,2 +1,0 @@
-print "Hi, this is a demo!";
-var language = "lox";
