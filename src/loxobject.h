@@ -16,14 +16,14 @@ public:
 	// Construct a lox object of type String
 	LoxObject(std::string val);
 
-	// Construct a lox object of type Integer
-	LoxObject(int val);
+	// Construct a lox object of type Number
+	LoxObject(double val);
 
 	// Obtain the value of the lox object of type String
 	std::string getStringVal();
 
-	// Obtain the value of the lox object of type Integer
-	int getIntegerValue();
+	// Obtain the value of the lox object of type Number
+	double getNumberValue();
 	
 	// Assert that the lox object is of type Empty
 	bool assertEmpty();

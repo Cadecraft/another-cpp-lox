@@ -51,9 +51,9 @@ enum class TokenType {
 	EndOfFile
 };
 
-// The type of a lox object, which can be a string, integer, or other value
+// The type of a lox object, which can be a string, number, or other value
 enum class LoxObjectType {
 	String,
-	Integer,
+	Number,
 	Empty
 };

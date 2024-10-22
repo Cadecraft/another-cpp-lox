@@ -2,6 +2,7 @@
 
 #include <string>
 #include <vector>
+#include <iostream>
 
 #include "structures.h"
 #include "token.h"
@@ -39,7 +40,7 @@ private:
 		std::string text = source.substr(start, current - start + 1);
 		tokens.push_back(new Token(type, text, literal, line));
 	}
-	
+
 	// Check if match, and if so, consume the current character (like conditional version of `advance()`)
 	bool match(char expected) {
 		if (isAtEnd()) return false;
@@ -53,7 +54,14 @@ private:
 		if (isAtEnd()) return '\0';
 		return source[current];
 	}
-	
+
+	// Advance twice without consuming the characters
+	char peekNext() {
+		if (current + 1 >= (int) (source.length())) return '\0';
+		return source[current + 1];
+	}
+
+	// String
 	void string() {
 		while (peek() != '"' && !isAtEnd()) {
 			if (peek() == '\n') line++;
@@ -68,6 +76,31 @@ private:
 		// Trim surrounding quotes
 		std::string value = source.substr(start + 1, current - start);
 		addToken(TokenType::String, value);
+	}
+
+	// Check whether a character is a digit
+	bool isDigit(char c) {
+		return c >= '0' && c <= '9';
+	}
+
+	// Number
+	void number() {
+		// Consume the literal
+		while (isDigit(peek())) advance();
+		// Look for a fractional part
+		if (peek() == '.' && isDigit(peekNext())) {
+			// Consume the `.`
+			advance();
+			while (isDigit(peek())) {
+				advance();
+			}
+		}
+		try {
+			// TODO: fix error when entering a single number (ex. '8')
+			addToken(TokenType::Number, std::stod(source.substr(start, current - start)));
+		} catch(std::invalid_argument& e) {
+			Lox::error(line, "Invalid number.");
+		}
 	}
 
 	// Scan an individual token
@@ -138,6 +171,11 @@ private:
 			string();
 			break;
 		default:
+			// Check for digits
+			if (isDigit(c)) {
+				number();
+				break;
+			}
 			// Character is still consumed and we keep scanning, but errors
 			Lox::error(line, "Unexpected character.");
 			break;

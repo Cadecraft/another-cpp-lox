@@ -13,9 +13,9 @@ LoxObject::LoxObject(std::string val) {
 	t = LoxObjectType::String;
 }
 
-LoxObject::LoxObject(int val) {
+LoxObject::LoxObject(double val) {
 	val_i = val;
-	t = LoxObjectType::Integer;
+	t = LoxObjectType::Number;
 }
 
 std::string LoxObject::getStringVal() {
@@ -26,8 +26,8 @@ std::string LoxObject::getStringVal() {
 	}
 }
 
-int LoxObject::getIntegerValue() {
-	if (t != LoxObjectType::Integer) {
+double LoxObject::getNumberValue() {
+	if (t != LoxObjectType::Number) {
 		throw std::runtime_error("Improper type for LoxObject: expected LoxObject::Integer");
 	} else {
 		return val_i;
@@ -42,7 +42,7 @@ std::string LoxObject::toString() {
 	switch (t) {
 	case LoxObjectType::String:
 		return val_s;
-	case LoxObjectType::Integer:
+	case LoxObjectType::Number:
 		return std::to_string(val_i);
 	case LoxObjectType::Empty:
 		return "(Empty)";
