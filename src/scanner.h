@@ -2,6 +2,7 @@
 
 #include <string>
 #include <vector>
+#include <map>
 #include <iostream>
 
 #include "structures.h"
@@ -11,6 +12,7 @@ class Scanner {
 private:
 	std::string source;
 	std::vector<Token*> tokens;
+	std::map<std::string, TokenType> keywords;
 
 	int start;
 	int current;
@@ -83,6 +85,20 @@ private:
 		return c >= '0' && c <= '9';
 	}
 
+	// Check whether a character is an alpha character
+	bool isAlpha(char c) {
+		return (
+			(c >= 'a' && c <= 'z')
+			|| (c >= 'A' && c <= 'Z')
+			|| (c == '_')
+		);
+	}
+
+	// Check whether a number is an alpha character or a digit
+	bool isAlphaNumeric(char c) {
+		return isAlpha(c) || isDigit(c);
+	}
+
 	// Number
 	void number() {
 		// Consume the literal
@@ -96,10 +112,23 @@ private:
 			}
 		}
 		try {
-			// TODO: fix error when entering a single number (ex. '8')
+			// Add the number as a token
 			addToken(TokenType::Number, std::stod(source.substr(start, current - start)));
 		} catch(std::invalid_argument& e) {
 			Lox::error(line, "Invalid number.");
+		}
+	}
+
+	// Identifier
+	void identifier() {
+		while (isAlphaNumeric(peek())) advance();
+		std::string text = source.substr(start, current - start);
+		if (keywords.find(text) == keywords.end()) {
+			// User-defined identifier
+			addToken(TokenType::Identifier);
+		} else {
+			// Keyword
+			addToken(keywords[text]);
 		}
 	}
 
@@ -171,9 +200,12 @@ private:
 			string();
 			break;
 		default:
-			// Check for digits
+			// Check for digits or alpha characters
 			if (isDigit(c)) {
 				number();
+				break;
+			} else if (isAlpha(c)) {
+				identifier();
 				break;
 			}
 			// Character is still consumed and we keep scanning, but errors
@@ -189,10 +221,27 @@ public:
 		this->start = 0;
 		this->current = 0;
 		this->line = 1;
+		// Store keywords in a map (for ease)
+		keywords["and"] = TokenType::And;
+		keywords["class"] = TokenType::Class;
+		keywords["else"] = TokenType::Else;
+		keywords["false"] = TokenType::False;
+		keywords["for"] = TokenType::For;
+		keywords["fun"] = TokenType::Fun;
+		keywords["if"] = TokenType::If;
+		keywords["nil"] = TokenType::Nil;
+		keywords["or"] = TokenType::Or;
+		keywords["print"] = TokenType::Print;
+		keywords["return"] = TokenType::Return;
+		keywords["super"] = TokenType::Super;
+		keywords["this"] = TokenType::This;
+		keywords["true"] = TokenType::True;
+		keywords["var"] = TokenType::Var;
+		keywords["while"] = TokenType::While;
 	}
 
 	// Scan the tokens
-	void scanTokens() {
+	std::vector<Token*> scanTokens() {
 		while (!isAtEnd()) {
 			// Beginning of next lexeme
 			start = current;
@@ -201,5 +250,7 @@ public:
 		// Empty token
 		LoxObject l;
 		tokens.push_back(new Token(TokenType::EndOfFile, "", l, line));
+		std::vector<Token*> res(tokens);
+		return res;
 	}
 };

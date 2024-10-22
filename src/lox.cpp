@@ -58,9 +58,13 @@ int Lox::run(std::string s) {
 
 	// Step 1: scan into a list of tokens
 	Scanner scanner(s);
-	scanner.scanTokens();
+	std::vector<Token*> tokens = scanner.scanTokens();
 
 	// DBG: print the tokens
+	for (auto token : tokens) {
+		std::cout << token->toString() << ",";
+	}
+	std::cout << std::endl;
 
 	// Finished
 	return 0;
