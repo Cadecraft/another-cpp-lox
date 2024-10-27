@@ -19,6 +19,9 @@ public:
 	// Construct a lox object of type Number
 	LoxObject(double val);
 
+	// Get the type
+	bool isEmpty();
+
 	// Obtain the value of the lox object of type String
 	std::string getStringVal();
 

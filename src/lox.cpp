@@ -4,6 +4,8 @@
 #include "lox.h"
 #include "token.h"
 #include "scanner.h"
+#include "expr.h"
+//#include "astprinter.h"
 
 bool Lox::hadError = false;
 
@@ -65,6 +67,8 @@ int Lox::run(std::string s) {
 		std::cout << token->toString() << ",";
 	}
 	std::cout << std::endl;
+
+	// TODO: clean up memory
 
 	// Finished
 	return 0;

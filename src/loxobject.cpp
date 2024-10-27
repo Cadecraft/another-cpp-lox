@@ -18,6 +18,10 @@ LoxObject::LoxObject(double val) {
 	t = LoxObjectType::Number;
 }
 
+bool LoxObject::isEmpty() {
+	return t == LoxObjectType::Empty;
+}
+
 std::string LoxObject::getStringVal() {
 	if (t != LoxObjectType::String) {
 		throw std::runtime_error("Improper type for LoxObject: expected LoxObject::String");
