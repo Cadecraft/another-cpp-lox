@@ -15,6 +15,9 @@ private:
 
 public:
 
+	// Run a debug sequence
+	static void debug();
+
 	// Open and run a lox program as a file
 	static int runFile(std::string path);
 

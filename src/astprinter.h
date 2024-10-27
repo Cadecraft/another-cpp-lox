@@ -1,3 +1,5 @@
+#pragma once
+
 #include "expr.h"
 
 class AstPrinter : protected Visitor<std::string> {
@@ -6,7 +8,7 @@ public:
 		return expr.accept(*this);
 	}
 	std::string visitBinaryExpr(Binary& expr) {
-		return parenthesize(expr.op.lexeme, expr.left, expr.right)
+		return parenthesize(expr.op.lexeme, expr.left, expr.right);
 	}
 	std::string visitGroupingExpr(Grouping& expr) {
 		std::string s = "group";
@@ -27,6 +29,7 @@ public:
 		res += name;
 		res += " ";
 		res += expr1.accept(*this);
+		return res;
 	}
 	std::string parenthesize(std::string& name, Expr& expr1, Expr& expr2) {
 		std::string res = "(";

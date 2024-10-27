@@ -5,9 +5,25 @@
 #include "token.h"
 #include "scanner.h"
 #include "expr.h"
-//#include "astprinter.h"
+#include "astprinter.h"
 
 bool Lox::hadError = false;
+
+void Lox::debug() {
+	// Debug
+	LoxObject empty;
+	Token token(TokenType::Minus, "-", empty, 1);
+	LoxObject ott(123);
+	LoxObject ffss(45.67);
+	Literal literal(ott);
+	Unary unary(token, literal);
+	Token star(TokenType::Star, "*", empty, 1);
+	Literal other(ffss);
+	Grouping grouping(other);
+	Binary root(unary, star, grouping);
+	AstPrinter printer;
+	//std::cout << printer.print(root) << std::endl;
+}
 
 int Lox::runFile(std::string path) {
 	// Read all bytes
