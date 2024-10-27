@@ -1,44 +1,79 @@
 #include "expr.h"
-
-class Binary;
+#include <string>
+#include <iostream> // For debugging
 
 // Visitor
 // TODO: template necessary?
-template <typename T>
-T Visitor<T>::visitBinaryExpr(Binary& b) {
+std::any Visitor::visitBinaryExpr(Binary& expr) {
 	// Do stuff
+	return "the default Visitor visit in expr.cpp was called";
+}
+std::any Visitor::visitGroupingExpr(Grouping& expr) {
+	// Do stuff
+	return "the default Visitor visit in expr.cpp was called";
+}
+std::any Visitor::visitLiteralExpr(Literal& expr) {
+	// Do stuff
+	return "the default Visitor visit in expr.cpp was called";
+}
+std::any Visitor::visitUnaryExpr(Unary& expr) {
+	// Do stuff
+	return "the default Visitor visit in expr.cpp was called";
 }
 
 // Expr
 // Accept a visitor (see the `visitor pattern`)
+std::any Expr::accept(Visitor* visitor) {
+	//return visitor.visitBinaryExpr(*this);
+	std::string s = "the default Expr accept in expr.cpp was called";
+	return s;
+}
 // Defined in the header
+std::string Expr::dbg_accept(Visitor* visitor) {
+	std::string s = "the debug accept was called";
+	return s;
+}
 
 // Binary
 Binary::Binary(Expr& left, Token& op, Expr& right) : left(left), op(op), right(right) { }
 // TODO: override with virtual (replace the types with a LoxObject?
 // TODO: implement accept for all
-template <typename R>
-R Binary::accept(Visitor<R>& visitor) {
-	return visitor.visitBinaryExpr(*this);
+std::any Binary::accept(Visitor* visitor) {
+	std::cout << "binary accept starting" << std::endl;
+	std::string s = std::any_cast<std::string>(visitor->visitBinaryExpr(*this));
+	std::cout << "binary accept about to return" << std::endl;
+	return s;
+	//std::string s = "r";
+	//return s;
+}
+std::string Binary::dbg_accept(Visitor* visitor) {
+	std::string s = std::any_cast<std::string>(visitor->visitBinaryExpr(*this));
+	return s;
 }
 
 // Grouping
 Grouping::Grouping(Expr& expression) : expression(expression) { }
-template <typename R>
-R Grouping::accept(Visitor<R>& visitor) {
-	return visitor.visitGroupingExpr(*this);
+std::any Grouping::accept(Visitor* visitor) {
+	std::string s = std::any_cast<std::string>(visitor->visitGroupingExpr(*this));
+	return s;
+	//std::string s = "r";
+	//return s;
 }
 
 // Literal
 Literal::Literal(LoxObject& obj) : obj(obj) { }
-template <typename R>
-R Literal::accept(Visitor<R>& visitor) {
-	return visitor.visitLiteralExpr(*this);
+std::any Literal::accept(Visitor* visitor) {
+	std::string s = std::any_cast<std::string>(visitor->visitLiteralExpr(*this));
+	return s;
+	//std::string s = "r";
+	//return s;
 }
 
 // Unary
 Unary::Unary(Token& op, Expr& right) : op(op), right(right) { }
-template <typename R>
-R Unary::accept(Visitor<R>& visitor) {
-	return visitor.visitUnaryExpr(*this);
+std::any Unary::accept(Visitor* visitor) {
+	std::string s = std::any_cast<std::string>(visitor->visitUnaryExpr(*this));
+	return s;
+	//std::string s = "r";
+	//return s;
 }

@@ -2,18 +2,20 @@
 
 #include "token.h"
 #include "loxobject.h"
+#include <any>
 
 class Binary;
 class Grouping;
 class Literal;
 class Unary;
 
-template <typename T>
+//template <typename T>
 class Visitor {
-	T visitBinaryExpr(Binary& expr);
-	T visitGroupingExpr(Grouping& expr);
-	T visitLiteralExpr(Literal& expr);
-	T visitUnaryExpr(Unary& expr);
+public:
+	virtual std::any visitBinaryExpr(Binary& expr);
+	virtual std::any visitGroupingExpr(Grouping& expr);
+	virtual std::any visitLiteralExpr(Literal& expr);
+	virtual std::any visitUnaryExpr(Unary& expr);
 };
 
 class Expr {
@@ -23,8 +25,8 @@ public:
 
 	// Accept a visitor (see the `visitor pattern`)
 	// Originally was virtual
-	template <typename R>
-	R accept(Visitor<R>& visitor);
+	virtual std::any accept(Visitor* visitor);
+	virtual std::string dbg_accept(Visitor* visitor);
 };
 
 class Binary : public Expr {
@@ -37,8 +39,8 @@ public:
 
 	// TODO: override with virtual (replace the types with a LoxObject?
 	// TODO: implement accept for all
-	template <typename R>
-	R accept(Visitor<R>& visitor);
+	std::any accept(Visitor* visitor);
+	std::string dbg_accept(Visitor* visitor);
 };
 
 class Grouping : public Expr {
@@ -47,8 +49,7 @@ public:
 
 	Grouping(Expr& expression);
 
-	template <typename R>
-	R accept(Visitor<R>& visitor);
+	std::any accept(Visitor* visitor);
 };
 
 class Literal : public Expr {
@@ -57,8 +58,7 @@ public:
 
 	Literal(LoxObject& obj);
 
-	template <typename R>
-	R accept(Visitor<R>& visitor);
+	std::any accept(Visitor* visitor);
 };
 
 class Unary : public Expr {
@@ -68,6 +68,5 @@ public:
 
 	Unary(Token& op, Expr& right);
 
-	template <typename R>
-	R accept(Visitor<R>& visitor);
+	std::any accept(Visitor* visitor);
 };
