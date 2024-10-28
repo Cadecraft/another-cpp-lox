@@ -22,7 +22,7 @@ void Lox::debug() {
 	Grouping grouping(other);
 	Binary root(unary, star, grouping);
 	AstPrinter printer;
-	std::cout << printer.print(root) << std::endl;
+	std::cout << "Debug printer output: " << printer.print(root) << std::endl;
 }
 
 int Lox::runFile(std::string path) {

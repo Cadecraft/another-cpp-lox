@@ -39,9 +39,7 @@ Binary::Binary(Expr& left, Token& op, Expr& right) : left(left), op(op), right(r
 // TODO: override with virtual (replace the types with a LoxObject?
 // TODO: implement accept for all
 std::any Binary::accept(Visitor* visitor) {
-	std::cout << "binary accept starting" << std::endl;
 	std::string s = std::any_cast<std::string>(visitor->visitBinaryExpr(*this));
-	std::cout << "binary accept about to return" << std::endl;
 	return s;
 	//std::string s = "r";
 	//return s;
