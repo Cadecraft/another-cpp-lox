@@ -84,6 +84,8 @@ int Lox::run(std::string s) {
 	}
 	std::cout << std::endl;
 
+	// Step 2: parse
+
 	// TODO: clean up memory
 
 	// Finished
