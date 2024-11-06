@@ -6,6 +6,7 @@
 #include "scanner.h"
 #include "expr.h"
 #include "astprinter.h"
+#include "parser.h"
 
 bool Lox::hadError = false;
 
@@ -64,6 +65,15 @@ void Lox::report(int line, std::string where, std::string message) {
 	std::cout << "[line " << line << "] Error" << where << ": " << message << std::endl;
 }
 
+// Throw an error
+void Lox::error(Token* token, std::string message) {
+	if (token->type == TokenType::EndOfFile) {
+		report(token->line, " at end", message);
+	} else {
+		report(token->line, " at '" + token->lexeme + "'", message);
+	}
+}
+
 void Lox::error(int line, std::string message) {
 	report(line, "", message);
 	hadError = true;
@@ -85,6 +95,13 @@ int Lox::run(std::string s) {
 	std::cout << std::endl;
 
 	// Step 2: parse
+	Parser parser(tokens);
+	Expr* expression = parser.parse();
+	// Stop if there was a syntax error
+	if (hadError) return 0;
+	// Print the finished expression
+	AstPrinter printer;
+	std::cout << printer.print(*expression) << std::endl;
 
 	// TODO: clean up memory
 

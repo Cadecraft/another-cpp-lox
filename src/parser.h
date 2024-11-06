@@ -3,8 +3,11 @@
 #include "structures.h"
 #include "token.h"
 #include "expr.h"
+#include "loxobject.h"
+#include "lox.h"
 
 #include <vector>
+#include <string>
 
 class Parser {
 private:
@@ -13,7 +16,7 @@ private:
 
 	// Check if there are no more tokens to parse
 	bool isAtEnd() {
-		return peek().type == TokenType::EndOfFile;
+		return peek()->type == TokenType::EndOfFile;
 	}
 
 	// Check the current token (not yet consumed)
@@ -89,7 +92,7 @@ private:
 	// Check: return whether the current token is of the given type without consuming the token
 	bool check(TokenType type) {
 		if (isAtEnd()) return false;
-		return peek().type == type;
+		return peek()->type == type;
 	}
 
 	// Advance: consume the current token and return it
@@ -99,57 +102,138 @@ private:
 	}
 
 	// Equality grammar: "matches an equality operator or anything of higher precedence"
-	Expr equality() {
-		Expr expr = comparison();
+	Expr* equality() {
+		Expr* expr = comparison();
 		while (match(TokenType::BangEqual, TokenType::EqualEqual)) {
-			Token operator = previous();
-			Expr right = comparison();
-			expr = new Expr.Binary(expr, operator, right);
+			Token* op = previous();
+			Expr* right = comparison();
+			expr = new Binary(*expr, *op, *right);
 		}
 		return expr;
 	}
 
 	// Comparison grammar: similar to equality
-	Expr comparison() {
-		Expr expr = comparison();
+	Expr* comparison() {
+		Expr* expr = term();
 		while (match(TokenType::Greater, TokenType::GreaterEqual, TokenType::Less, TokenType::LessEqual)) {
-			Token operator = previous();
-			Expr right = term();
-			expr = new Expr.Binary(expr, operator, right);
+			Token* op = previous();
+			Expr* right = term();
+			expr = new Binary(*expr, *op, *right);
 		}
 		return expr;
 	}
 
 	// Addition and subtractions
-	Expr term() {
-		Expr expr = factor();
+	Expr* term() {
+		Expr* expr = factor();
 		while (match(TokenType::Minus, TokenType::Plus)) {
-			Token operator = previous();
-			Expr right = factor();
-			expr = new Binary(expr, operator, right); // TODO: check this works
+			Token* op = previous();
+			Expr* right = factor();
+			expr = new Binary(*expr, *op, *right);
 		}
 		return expr;
 	}
 
 	// Multiplication and division
-	Expr factor() {
-		Expr expr = unary();
+	Expr* factor() {
+		Expr* expr = unary();
 		while (match(TokenType::Slash, TokenType::Star)) {
-			Token operator = previous();
-			Expr right = unary();
-			expr = new Binary(expr, operator, right);
+			Token* op = previous();
+			Expr* right = unary();
+			expr = new Binary(*expr, *op, *right);
 		}
 		return expr;
 	}
 
+	Expr* unary() {
+		if (match(TokenType::Bang, TokenType::Minus)) {
+			Token* op = previous();
+			Expr right = *unary();
+			return new Unary(*op, right);
+		}
+		return primary();
+		// TODO: (make sure to clean up memory)
+	}
+
+	Expr* primary() {
+		if (match(TokenType::False)) {
+			LoxObject res(false);
+			return new Literal(res);
+		}
+		if (match(TokenType::True)) {
+			LoxObject res(true);
+			return new Literal(res);
+		}
+		if (match(TokenType::Nil)) {
+			LoxObject res;
+			return new Literal(res);
+		}
+		if (match(TokenType::Number, TokenType::String)) {
+			return new Literal(previous()->literal);
+		}
+		if (match(TokenType::LeftParen)) {
+			Expr* expr = expression();
+			consume(TokenType::RightParen, "Expect ')' after expression.");
+			return new Grouping(*expr);
+		}
+		// No valid expression
+		error(peek(), "Expect expression.");
+		throw std::runtime_error("See error reported by lox");
+	}
+
 	// Expression grammar
-	Expr expression() {
+	Expr* expression() {
 		// Expands to the equality rule (this is a recursive system)
 		return equality();
+	}
+	
+	// Consume a specific token
+	Token* consume(TokenType type, std::string message) {
+		if (check(type)) return advance();
+		// Not of the expected type
+		error(peek(), message);
+		throw std::runtime_error("See error reported by lox");
+	}
+
+	// Raise an error upwards
+	void error(Token* token, std::string message) {
+		Lox::error(token, message);
+		// In the book, return a parse error
+	}
+
+	// Synchronize the parser if we run into an error
+	void synchronize() {
+		advance();
+		while (!isAtEnd()) {
+			if (previous()->type == TokenType::Semicolon) return;
+			switch (peek()->type) {
+				case TokenType::Class:
+				case TokenType::Fun:
+				case TokenType::Var:
+				case TokenType::For:
+				case TokenType::If:
+				case TokenType::While:
+				case TokenType::Print:
+				case TokenType::Return:
+					return;
+				default:
+					break;
+			}
+		}
+		advance();
 	}
 
 public:
 	Parser(std::vector<Token*>& tokens) : tokens(tokens) {
-		// TODO: ensure tokens can be passed as reference (not mutated)
+		// The tokens are initialized in the header
+	}
+
+	// Parse (return null if there were errors)
+	Expr* parse() {
+		try {
+			return expression();
+		} catch (const std::runtime_error& e) {
+			return nullptr;
+		}
 	}
 };

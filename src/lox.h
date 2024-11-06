@@ -4,6 +4,8 @@
 #include <string>
 #include <fstream>
 
+#include "token.h"
+
 // Provide the various entry points to the interpreter
 class Lox {
 private:
@@ -26,6 +28,9 @@ public:
 
 	// Experience an error
 	static void error(int line, std::string message);
+
+	// Experience an error with tokens
+	static void error(Token* token, std::string message);
 
 	// Run a lox program
 	static int run(std::string s);
