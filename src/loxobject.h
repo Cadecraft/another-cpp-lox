@@ -20,6 +20,9 @@ public:
 	LoxObject(double val);
 
 	// Get the type
+	LoxObjectType getType();
+
+	// Get the type
 	bool isEmpty();
 
 	// Obtain the value of the lox object of type String

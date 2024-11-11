@@ -18,6 +18,10 @@ LoxObject::LoxObject(double val) {
 	t = LoxObjectType::Number;
 }
 
+LoxObjectType LoxObject::getType() {
+	return t;
+}
+
 bool LoxObject::isEmpty() {
 	return t == LoxObjectType::Empty;
 }
