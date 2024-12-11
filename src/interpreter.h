@@ -25,18 +25,21 @@ public:
 
 	// Visit a unary expression (return a LoxObject)
 	std::any visitUnaryExpr(Unary& expr) {
-		LoxObject* right = evaluate(expr.right);
-		switch (expr.operator.type) {
-		case TokenType::Bang:
-			LoxObject res((isTruthy(right) ? 0.0, 1.0));
+		LoxObject* right = std::any_cast<LoxObject*>(evaluate(expr.right));
+		switch (expr.op.type) {
+		case TokenType::Bang: {
+			LoxObject res((isTruthy(*right) ? 0.0 : 1.0));
 			return res;
-		case TokenType::Minus:
-			LoxObject res(-1 * ((double) right));
+		}
+		case TokenType::Minus: {
+			LoxObject res(-1 * ((double) right->getNumberValue()));
 			return res;
-		default:
+		}
+		default: {
 			// Any/"unreachable"
 			LoxObject res;
 			return res;
+		}
 		}
 	}
 
@@ -54,14 +57,14 @@ public:
 	}
 
 	// Check if an object is equal to another object
-	bool isEqual(LoxObject& a, LoxObject& b) {
-		if (a.isEmpty() && b.isEmpty()) return true;
-		if (a.isEmpty()) return false;
-		if (a.getType() == LoxObjectType::Number && b.getType() == LoxObjectType::Number) {
-			return a.getNumberValue() == b.getNumberValue();
+	bool isEqual(LoxObject* a, LoxObject* b) {
+		if (a->isEmpty() && b->isEmpty()) return true;
+		if (a->isEmpty()) return false;
+		if (a->getType() == LoxObjectType::Number && b->getType() == LoxObjectType::Number) {
+			return a->getNumberValue() == b->getNumberValue();
 		}
-		if (a.getType() == LoxObjectType::String && b.getType() == LoxObjectType::String) {
-			return a.getStringVal() == b.getStringVal();
+		if (a->getType() == LoxObjectType::String && b->getType() == LoxObjectType::String) {
+			return a->getStringVal() == b->getStringVal();
 		}
 		// Should never reach this point; this means the types are mismatched
 		return false;
@@ -69,52 +72,63 @@ public:
 
 	// Evaluate binary operators
 	std::any visitBinaryExpr(Binary& expr) {
-		LoxObject& left = evaluate(expr.left);
-		LoxObject& right = evaluate(expr.right);
-		switch (expr.operator.type) {
-		case TokenType::Slash:
-			LoxObject res(left.getNumberValue() / right.getNumberValue());
+		LoxObject* left = std::any_cast<LoxObject*>(evaluate(expr.left));
+		LoxObject* right = std::any_cast<LoxObject*>(evaluate(expr.right));
+		switch (expr.op.type) {
+		case TokenType::Slash: {
+			LoxObject res(left->getNumberValue() / right->getNumberValue());
 			return res;
-		case TokenType::Star:
-			LoxObject res(left.getNumberValue() * right.getNumberValue());
+		}
+		case TokenType::Star: {
+			LoxObject res(left->getNumberValue() * right->getNumberValue());
 			return res;
-		case TokenType::Minus:
-			LoxObject res(left.getNumberValue() - right.getNumberValue());
+		}
+		case TokenType::Minus: {
+			LoxObject res(left->getNumberValue() - right->getNumberValue());
 			return res;
-		case TokenType::Plus:
-			if (left.getType() == LoxObjectType::Number && right.getType() == LoxObjectType::Number) {
-				LoxObject res(left.getNumberValue() * right.getNumberValue());
+		}
+		case TokenType::Plus: {
+			if (left->getType() == LoxObjectType::Number && right->getType() == LoxObjectType::Number) {
+				LoxObject res(left->getNumberValue() * right->getNumberValue());
 				return res;
 			}
-			if (left.getType() == LoxObjectType::String && right.getType() == LoxObjectType::String) {
-				LoxObject res(left.getStringVal() * right.getStringVal());
+			if (left->getType() == LoxObjectType::String && right->getType() == LoxObjectType::String) {
+				LoxObject res(left->getStringVal() + right->getStringVal());
 				return res;
 			}
 			break;
-		case TokenType::Greater:
-			LoxObject res((left.getNumberValue() > right.getNumberValue()) ? 1.0 : 0.0);
+		}
+		case TokenType::Greater: {
+			LoxObject res((left->getNumberValue() > right->getNumberValue()) ? 1.0 : 0.0);
 			return res;
-		case TokenType::Greater_Equal:
-			LoxObject res((left.getNumberValue() >= right.getNumberValue()) ? 1.0 : 0.0);
+		}
+		case TokenType::GreaterEqual: {
+			LoxObject res((left->getNumberValue() >= right->getNumberValue()) ? 1.0 : 0.0);
 			return res;
-		case TokenType::Less:
-			LoxObject res((left.getNumberValue() < right.getNumberValue()) ? 1.0 : 0.0);
+		}
+		case TokenType::Less: {
+			LoxObject res((left->getNumberValue() < right->getNumberValue()) ? 1.0 : 0.0);
 			return res;
-		case TokenType::Less_Equal:
-			LoxObject res((left.getNumberValue() <= right.getNumberValue()) ? 1.0 : 0.0);
+		}
+		case TokenType::LessEqual: {
+			LoxObject res((left->getNumberValue() <= right->getNumberValue()) ? 1.0 : 0.0);
 			return res;
-		case TokenType::BangEqual:
+		}
+		case TokenType::BangEqual: {
 			LoxObject res((!isEqual(left, right)) ? 1.0 : 0.0);
 			return res;
-		case TokenType::EqualEqual:
+		}
+		case TokenType::EqualEqual: {
 			LoxObject res((isEqual(left, right)) ? 1.0 : 0.0);
 			return res;
-		default:
+		}
+		default: {
 			// Unreachable
 			LoxObject res;
 			return res;
 		}
+		}
 	}
 
-	//
-}
+	// TODO: continue implementing
+};

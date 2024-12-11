@@ -7,6 +7,7 @@
 #include "expr.h"
 #include "astprinter.h"
 #include "parser.h"
+#include "interpreter.h"
 
 bool Lox::hadError = false;
 
