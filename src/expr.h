@@ -26,7 +26,7 @@ public:
 	// Accept a visitor (see the `visitor pattern`)
 	// Originally was virtual
 	virtual std::any accept(Visitor* visitor);
-	virtual std::string dbg_accept(Visitor* visitor);
+	//virtual std::string dbg_accept(Visitor* visitor); // TODO: remove
 };
 
 class Binary : public Expr {
@@ -40,7 +40,7 @@ public:
 	// TODO: override with virtual (replace the types with a LoxObject?
 	// TODO: implement accept for all
 	std::any accept(Visitor* visitor);
-	std::string dbg_accept(Visitor* visitor);
+	//std::string dbg_accept(Visitor* visitor); // TODO: remove
 };
 
 class Grouping : public Expr {
