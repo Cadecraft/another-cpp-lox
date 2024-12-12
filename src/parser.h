@@ -9,6 +9,21 @@
 #include <vector>
 #include <string>
 
+// TODO: test and implement, or remove
+/*class ParseError : public std::runtime_error {
+private:
+	std::string message;
+
+public:
+	// Construct the error
+	ParseError(const char* msg) : message(msg) {}
+
+	// Method to return the message
+	const char* what() const throw() {
+		return message.c_str();
+	}
+};*/
+
 class Parser {
 private:
 	std::vector<Token*>& tokens;

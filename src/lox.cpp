@@ -100,9 +100,14 @@ int Lox::run(std::string s) {
 	Expr* expression = parser.parse();
 	// Stop if there was a syntax error
 	if (hadError) return 0;
-	// Print the finished expression
+	// DEBUG: Print the finished expression
 	AstPrinter printer;
 	std::cout << printer.print(*expression) << std::endl;
+
+	Interpreter interpreter;
+
+	// Step 3: run the interpreter
+	interpreter.interpret(*expression);
 
 	// TODO: clean up memory
 

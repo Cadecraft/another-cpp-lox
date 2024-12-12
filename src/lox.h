@@ -9,14 +9,13 @@
 // Provide the various entry points to the interpreter
 class Lox {
 private:
-	// Report an error
-	static void report(int line, std::string where, std::string message);
-
 	// Whether the program ran had an error
 	static bool hadError;
 
-public:
+	// Report an error
+	static void report(int line, std::string where, std::string message);
 
+public:
 	// Run a debug sequence
 	static void debug();
 
