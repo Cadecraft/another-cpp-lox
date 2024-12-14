@@ -131,7 +131,7 @@ public:
 		case TokenType::Plus: {
 			checkNumberOperands(expr.op, *right, *left);
 			if (left->getType() == LoxObjectType::Number && right->getType() == LoxObjectType::Number) {
-				LoxObject res(left->getNumberValue() * right->getNumberValue());
+				LoxObject res(left->getNumberValue() + right->getNumberValue());
 				return res;
 			}
 			if (left->getType() == LoxObjectType::String && right->getType() == LoxObjectType::String) {
@@ -189,6 +189,7 @@ public:
 			//evaluate(expr);
 			// TODO: actually output the value
 			std::cout << "  DBG: Evaluation finished" << std::endl;
+			std::cout << "  DBG: Value is: " << std::any_cast<LoxObject>(value).toString() << std::endl;
 		} catch (RuntimeError& r) {
 			// TODO: correct?
 			Lox::error(&r.token, r.message);
