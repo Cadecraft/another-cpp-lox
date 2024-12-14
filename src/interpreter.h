@@ -19,7 +19,7 @@ public:
 	}
 
 	// Visit a group (return a LoxObject)
-	std::any visitGrouping(Grouping& expr) {
+	std::any visitGroupingExpr(Grouping& expr) {
 		return evaluate(expr.expression);
 	}
 
@@ -189,7 +189,10 @@ public:
 			//evaluate(expr);
 			// TODO: actually output the value
 			std::cout << "  DBG: Evaluation finished" << std::endl;
-			std::cout << "  DBG: Value is: " << std::any_cast<LoxObject>(value).toString() << std::endl;
+			std::cout << "  DBG: Final value type: " << typeid(expr).name() << std::endl;
+			//if (typeid(expr).name() == "int") {
+				//std::cout << "  DBG: Value is: " << std::any_cast<LoxObject>(value).toString() << std::endl;
+			//}
 		} catch (RuntimeError& r) {
 			// TODO: correct?
 			Lox::error(&r.token, r.message);
