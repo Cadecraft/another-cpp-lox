@@ -8,11 +8,13 @@
 #include <string>
 #include <any>
 #include <iostream>
+#include <typeinfo> // For debugging
 
 class Interpreter : public Visitor {
 public:
 	// Visit a literal (return a LoxObject)
-	std::any visitLiteralExpression(Literal& expr) {
+	std::any visitLiteralExpr(Literal& expr) {
+		std::cout << "    DBG: in Interpreter::visitLiteralExpression, returning" << std::endl;
 		return expr.obj;
 	}
 
@@ -23,8 +25,10 @@ public:
 
 	// Evaluate an expression
 	std::any evaluate(Expr& expr) {
-		std::cout << "    DBG: in evaluate, about to expr.accept" << std::endl;
-		return expr.accept(this);
+		std::cout << "    DBG: in evaluate, about to expr.accept (type: " << typeid(expr).name() << ")" << std::endl;
+		std::any res = expr.accept(this);
+		std::cout << "    DBG: in evaluate, about to return (type: " << typeid(res).name() << ")" << std::endl;
+		return res;
 	}
 
 	// Visit a unary expression (return a LoxObject)
@@ -93,8 +97,21 @@ public:
 
 	// Evaluate binary operators
 	std::any visitBinaryExpr(Binary& expr) {
-		LoxObject* left = std::any_cast<LoxObject*>(evaluate(expr.left));
-		LoxObject* right = std::any_cast<LoxObject*>(evaluate(expr.right));
+		std::cout << "    DBG: inside Interpreter::visitBinaryExpr" << std::endl;
+		// TODO: fix (we're trying to cast to LoxObject* instead of LoxObject&--invalid
+		std::any eval_left = evaluate(expr.left);
+		std::any eval_right = evaluate(expr.right);
+		LoxObject* dbg_e = new LoxObject();
+		std::any dbg_type_tester = dbg_e;
+		std::any dbg_type_tester_2 = *dbg_e;
+		std::cout << "    DBG: finished evaluating, about to any cast" << std::endl;
+		std::cout << "    DBG: Type of eval_left: " << eval_left.type().name() << std::endl;
+		std::cout << "    DBG: Type of dbg_type_tester: " << dbg_type_tester.type().name() << std::endl;
+		std::cout << "    DBG: Type of dbg_type_tester_2: " << dbg_type_tester_2.type().name() << std::endl;
+		std::cout << "    DBG: Type of eval_right: " << eval_right.type().name() << std::endl;
+		LoxObject* left = &std::any_cast<LoxObject&>(eval_left);
+		LoxObject* right = &std::any_cast<LoxObject&>(eval_right);
+		std::cout << "    DBG: finished any casts in Interpreter::visitBinaryExpr" << std::endl;
 		switch (expr.op.type) {
 		case TokenType::Slash: {
 			checkNumberOperands(expr.op, *right, *left);

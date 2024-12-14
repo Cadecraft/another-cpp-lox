@@ -160,6 +160,7 @@ private:
 		return expr;
 	}
 
+	// Unary
 	Expr* unary() {
 		if (match(TokenType::Bang, TokenType::Minus)) {
 			Token* op = previous();

@@ -20,4 +20,5 @@ int main(int argc, const char* argv[]) {
 		// Interactive prompt for script
 		Lox::runPrompt();
 	}
+	std::cout << "DBG: MAIN FINISHED" << std::endl;
 }

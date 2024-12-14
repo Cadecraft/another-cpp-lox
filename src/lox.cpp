@@ -37,8 +37,10 @@ int Lox::runFile(std::string path) {
 		run(buffer.str());
 		if (hadError) return 65;
 		else return 0;
-	} catch (...) {
+	} catch (const std::exception& exc) {
 		// Failed to read file
+		// TODO: remove this debug section?
+		std::cerr << exc.what();
 		return 1;
 	}
 }
@@ -54,7 +56,9 @@ int Lox::runPrompt() {
 			// User exited
 			return 0;
 		}
+		std::cout << "DBG: runPrompt STARTING RUNNING" << std::endl;
 		run(line);
+		std::cout << "DBG: runPrompt FINISHED RUNNING" << std::endl;
 		// Do not kill the session in the interactive loop
 		hadError = false;
 	}
@@ -90,8 +94,9 @@ int Lox::run(std::string s) {
 	std::vector<Token*> tokens = scanner.scanTokens();
 
 	// DBG: print the tokens
+	std::cout << "  DBG: Tokens:" << std::endl;
 	for (auto token : tokens) {
-		std::cout << token->toString() << ",";
+		std::cout << token->toString() << ", ";
 	}
 	std::cout << std::endl;
 
@@ -102,6 +107,7 @@ int Lox::run(std::string s) {
 	if (hadError) return 0;
 	// DEBUG: Print the finished expression
 	AstPrinter printer;
+	std::cout << "  DBG: Printing expression:" << std::endl;
 	std::cout << printer.print(*expression) << std::endl;
 
 	Interpreter interpreter;

@@ -52,6 +52,7 @@ Literal::Literal(LoxObject& obj) : obj(obj) { }
 std::any Literal::accept(Visitor* visitor) {
 	/*std::string s = std::any_cast<std::string>(visitor->visitLiteralExpr(*this));
 	return s;*/
+	std::cout << "      DBG: in Literal, accepting a visitor" << std::endl;
 	return visitor->visitLiteralExpr(*this);
 }
 

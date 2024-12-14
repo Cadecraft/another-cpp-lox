@@ -47,7 +47,19 @@ bool LoxObject::assertEmpty() {
 }
 
 std::string LoxObject::toString() {
+	// TODO: remove the debugging type message
 	switch (t) {
+	case LoxObjectType::String:
+		return "str(" + val_s + ")";
+	case LoxObjectType::Number:
+		return "num(" + std::to_string(val_i) + ")";
+	case LoxObjectType::Empty:
+		return "(Empty)";
+	default:
+		return "(No valid type)";
+	}
+
+	/*switch (t) {
 	case LoxObjectType::String:
 		return val_s;
 	case LoxObjectType::Number:
@@ -56,5 +68,5 @@ std::string LoxObject::toString() {
 		return "(Empty)";
 	default:
 		return "(No valid type)";
-	}
+	}*/
 }
