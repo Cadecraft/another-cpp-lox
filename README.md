@@ -37,12 +37,15 @@ Lox source code (contents of a file or lines from the interactive interpreter)
             |
             V
 Scanner (converts the code into a sequence of tokens) -> tokens
-                                                           |
-                                                           V
+                                                          |
+                                                          V
 Parser (uses the tokens to produce an abstract syntax tree) -> AST
                                                                 |
                                                                 V
-                                             (in progress)     ...
+Interpreter (interprets the AST)          (in progress)        ...
+                                                                |
+                                                                V
+                                                               ...
 ```
 Other features:
 ```
