@@ -4,6 +4,7 @@
 #include <string>
 #include <any>
 #include <iostream>
+#include <typeinfo>
 
 class AstPrinter : public Visitor {
 public:
@@ -44,6 +45,9 @@ public:
 
 	std::any visitUnaryExpr(Unary& expr) {
 		std::cout << "    DBG: inside AstPrinter::visitUnaryExpr" << std::endl;
+		std::cout << "    DBG: expr is of type: " << typeid(expr).name() << std::endl;
+		//Expr* z = (expr.right);
+		std::cout << "    DBG: expr right is of type: " << typeid(expr.right).name() << std::endl;
 		std::string res = parenthesize(expr.op.lexeme, expr.right);
 		std::cout << "    DBG: finished AstPrinter::visitUnaryExpr" << std::endl;
 		return res;
@@ -54,6 +58,8 @@ public:
 		res += name;
 		res += " ";
 		std::cout << "      DBG: inside parenthesize (name, expr1), about to any cast" << std::endl;
+		std::cout << "      DBG: expr1 (type: " << typeid(expr1).name() << ")" << std::endl;
+		std::cout << "      DBG: about to any cast" << std::endl;
 		res += std::any_cast<std::string>(expr1.accept(this));
 		res += ")";
 		std::cout << "      DBG: finished parenthesize (name, expr1)" << std::endl;

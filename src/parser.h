@@ -8,6 +8,8 @@
 
 #include <vector>
 #include <string>
+#include <iostream>
+#include <typeinfo>
 
 // TODO: test and implement, or remove
 /*class ParseError : public std::runtime_error {
@@ -163,8 +165,10 @@ private:
 	// Unary
 	Expr* unary() {
 		if (match(TokenType::Bang, TokenType::Minus)) {
+			std::cout << "      DBG: parser: matched Bang or Minus" << std::endl;
 			Token* op = previous();
-			Expr right = *unary();
+			Expr& right = *unary(); // NOTE: corrected from `Expr right` to `Expr& right` due to ownership issues
+			std::cout << "      DBG: parser: right expr made, of type " << typeid(right).name() << std::endl;
 			return new Unary(*op, right);
 		}
 		return primary();
