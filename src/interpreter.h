@@ -129,7 +129,6 @@ public:
 			return res;
 		}
 		case TokenType::Plus: {
-			checkNumberOperands(expr.op, *right, *left);
 			if (left->getType() == LoxObjectType::Number && right->getType() == LoxObjectType::Number) {
 				LoxObject res(left->getNumberValue() + right->getNumberValue());
 				return res;
