@@ -188,10 +188,11 @@ public:
 			//evaluate(expr);
 			// TODO: actually output the value
 			std::cout << "  DBG: Evaluation finished" << std::endl;
-			std::cout << "  DBG: Final value type: " << typeid(expr).name() << std::endl;
-			//if (typeid(expr).name() == "int") {
-				//std::cout << "  DBG: Value is: " << std::any_cast<LoxObject>(value).toString() << std::endl;
-			//}
+			std::cout << "  DBG: Final value type: " << typeid(value).name() << std::endl;
+			// The return value SHOULD be a LoxObject
+			// TODO: catch errors
+			// Print the return value
+			std::cout << std::any_cast<LoxObject>(value).toString() << std::endl;
 		} catch (RuntimeError& r) {
 			// TODO: correct?
 			Lox::error(&r.token, r.message);
