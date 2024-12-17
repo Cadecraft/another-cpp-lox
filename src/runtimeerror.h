@@ -1,6 +1,7 @@
 #pragma once
 
 #include "token.h"
+#include <stdexcept>
 
 // TODO: test and implement, or remove
 class RuntimeError : public std::runtime_error {

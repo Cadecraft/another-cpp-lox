@@ -7,7 +7,8 @@
 #include "expr.h"
 #include "astprinter.h"
 #include "parser.h"
-#include "interpreter.h"
+
+Interpreter Lox::interpreter;
 
 bool Lox::hadError = false;
 
@@ -110,10 +111,10 @@ int Lox::run(std::string s) {
 	std::cout << "  DBG: Printing expression:" << std::endl;
 	std::cout << printer.print(*expression) << std::endl;
 
-	Interpreter interpreter;
+	//Interpreter interpreter;
 
 	// Step 3: run the interpreter
-	interpreter.interpret(*expression);
+	/*Lox::*/interpreter.interpret(*expression); // TODO: undefined reference to Lox::interpreter
 
 	// TODO: clean up memory
 

@@ -5,10 +5,13 @@
 #include <fstream>
 
 #include "token.h"
+#include "interpreter.h"
 
 // Provide the various entry points to the interpreter
 class Lox {
 private:
+	static Interpreter interpreter;
+
 	// Whether the program ran had an error
 	static bool hadError;
 
