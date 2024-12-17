@@ -33,7 +33,8 @@ public:
 
 	// Visit a unary expression (return a LoxObject)
 	std::any visitUnaryExpr(Unary& expr) {
-		LoxObject* right = std::any_cast<LoxObject*>(evaluate(expr.right));
+		std::any eval_right = evaluate(expr.right);
+		LoxObject* right = &std::any_cast<LoxObject&>(eval_right);
 		switch (expr.op.type) {
 		case TokenType::Bang: {
 			LoxObject res((isTruthy(*right) ? 0.0 : 1.0));
