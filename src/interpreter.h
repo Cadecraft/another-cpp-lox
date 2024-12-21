@@ -8,6 +8,7 @@
 #include <any>
 #include <iostream>
 #include <typeinfo> // For debugging
+#include <vector>
 
 class Interpreter : public Visitor {
 public:
@@ -23,6 +24,12 @@ public:
 	// Visit a unary expression (return a LoxObject)
 	std::any visitUnaryExpr(Unary& expr);
 
+	// Visit an expression statement (return null)
+	std::any visitExpressionStmt(Expression& stmt);
+
+	// Visit a print statement (return null)
+	std::any visitPrintStmt(Print& stmt);
+
 	// Check if an object is truthy or not
 	bool isTruthy(LoxObject& obj);
 
@@ -35,10 +42,13 @@ public:
 	// Check that the operands are valid, if double
 	void checkNumberOperands(Token& oper, LoxObject& left, LoxObject& right);
 
+	// Execute a statement
+	void execute(Stmt& stmt);
+
 	// Evaluate binary operators
 	std::any visitBinaryExpr(Binary& expr);
 
 	// NOTE: this was implemented before the other parts of the interpreter,
 	// just so that we can test running it
-	void interpret(Expr& expr);
+	void interpret(std::vector<Stmt*>& statements);
 };

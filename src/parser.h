@@ -178,11 +178,11 @@ private:
 
 	Expr* primary() {
 		if (match(TokenType::False)) {
-			LoxObject res(false);
+			LoxObject res(0.0); // The book uses true and false, but our LoxObject stores only numbers and strings, no official booleans
 			return new Literal(res);
 		}
 		if (match(TokenType::True)) {
-			LoxObject res(true);
+			LoxObject res(1.0);
 			return new Literal(res);
 		}
 		if (match(TokenType::Nil)) {
@@ -244,17 +244,48 @@ private:
 		advance();
 	}
 
+	Print* printStatement() {
+		Expr* value = expression();
+		consume(TokenType::Semicolon, "Expect ';' after value.");
+		// TODO: use pointer or reference, instead of just Stmt?
+		Print* res = new Print(*value);
+		return res;
+	}
+
+	Expression* expressionStatement() {
+		Expr* expr = expression();
+		consume(TokenType::Semicolon, "Expect ';' after expression.");
+		Expression* res = new Expression(*expr);
+		return res;
+	}
+
+	Stmt* statement() {
+		if (match(TokenType::Print)) {
+			Print* res = printStatement();
+			return res;
+		}
+		// Doesn't match any known statement, so assume expression statement
+		Expression* res = expressionStatement();
+		return res;
+	}
+
 public:
 	Parser(std::vector<Token*>& tokens) : tokens(tokens) {
 		// The tokens are initialized in the header
 	}
 
 	// Parse (return null if there were errors)
-	Expr* parse() {
-		try {
+	std::vector<Stmt*> parse() {
+		std::vector<Stmt*> statements;
+		while (!isAtEnd()) {
+			statements.push_back(statement());
+		}
+		return statements;
+
+		/*try {
 			return expression();
 		} catch (const std::runtime_error& e) {
 			return nullptr;
-		}
+		}*/
 	}
 };

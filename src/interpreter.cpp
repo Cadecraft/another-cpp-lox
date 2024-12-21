@@ -1,8 +1,11 @@
 #include "interpreter.h"
+#include "stmt.h"
+
 #include "lox.h"
 
 std::any Interpreter::visitLiteralExpr(Literal& expr) {
 	std::cout << "    DBG: in Interpreter::visitLiteralExpression, returning" << std::endl;
+	// TODO: issue printing booleans ("print true;" fails)
 	return expr.obj;
 }
 
@@ -155,10 +158,32 @@ std::any Interpreter::visitBinaryExpr(Binary& expr) {
 	}
 }
 
-void Interpreter::interpret(Expr& expr) {
-	// TODO: impl try catch
+std::any Interpreter::visitExpressionStmt(Expression& stmt) {
+	evaluate(stmt.expr);
+	// TODO: should return nullptr?
+	return nullptr;
+}
+
+std::any Interpreter::visitPrintStmt(Print& stmt) {
+	std::any value = evaluate(stmt.expr);
+	// TODO: is it a LoxObject?
+	// TODO: refactor into stringify, which was developed in the Evaluating Expressions chapter?
+	std::cout << "dbg: PRINT STATEMENT VISITED:" << std::endl;
+	std::cout << std::any_cast<LoxObject>(value).toString() << std::endl;
+	// TODO: should return nullptr?
+	return nullptr;
+}
+
+void Interpreter::execute(Stmt& stmt) {
+	stmt.accept(this);
+}
+
+void Interpreter::interpret(std::vector<Stmt*>& statements) {
 	try {
-		std::cout << "  DBG: Evaluating..." << std::endl;
+		for (Stmt* stmt : statements) {
+			execute(*stmt);
+		}
+		/*std::cout << "  DBG: Evaluating..." << std::endl;
 		// TODO: figure out bad_any_cast
 		std::any value = evaluate(expr);
 		//evaluate(expr);
@@ -168,10 +193,8 @@ void Interpreter::interpret(Expr& expr) {
 		// The return value SHOULD be a LoxObject
 		// TODO: catch errors
 		// Print the return value
-		std::cout << std::any_cast<LoxObject>(value).toString() << std::endl;
+		std::cout << std::any_cast<LoxObject>(value).toString() << std::endl;*/
 	} catch (RuntimeError& r) {
-		// TODO: correct?
 		Lox::error(&r.token, r.message);
-		// Lox::runtimeError(error);
 	}
 }

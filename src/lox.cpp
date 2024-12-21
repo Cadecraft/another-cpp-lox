@@ -103,18 +103,21 @@ int Lox::run(std::string s) {
 
 	// Step 2: parse
 	Parser parser(tokens);
-	Expr* expression = parser.parse();
+	std::vector<Stmt*> statements = parser.parse();
 	// Stop if there was a syntax error
 	if (hadError) return 0;
 	// DEBUG: Print the finished expression
-	AstPrinter printer;
-	std::cout << "  DBG: Printing expression:" << std::endl;
-	std::cout << printer.print(*expression) << std::endl;
+	//AstPrinter printer;
+	// TODO: debug print somewhere else?
+	//std::cout << "  DBG: Printing expression:" << std::endl;
+	//std::cout << printer.print(statements) << std::endl;
 
 	//Interpreter interpreter;
 
 	// Step 3: run the interpreter
-	/*Lox::*/interpreter.interpret(*expression); // TODO: undefined reference to Lox::interpreter
+	std::cout << "  DBG: Running interpreter on " << statements.size() << " statements" << std::endl;
+	/*Lox::*/interpreter.interpret(statements);
+	std::cout << "  DBG: Interpreter finished" << std::endl;
 
 	// TODO: clean up memory
 

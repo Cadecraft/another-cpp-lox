@@ -47,6 +47,7 @@ char Scanner::peekNext() {
 
 // String
 void Scanner::string() {
+	// TODO: fix string scanning (seems to be an issue)
 	while (peek() != '"' && !isAtEnd()) {
 		if (peek() == '\n') line++;
 		advance();
