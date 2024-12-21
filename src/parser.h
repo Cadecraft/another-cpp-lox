@@ -5,6 +5,7 @@
 #include "expr.h"
 #include "loxobject.h"
 #include "lox.h"
+#include "stmt.h"
 
 #include <vector>
 #include <string>
