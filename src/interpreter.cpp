@@ -4,8 +4,7 @@
 #include "lox.h"
 
 std::any Interpreter::visitLiteralExpr(Literal& expr) {
-	std::cout << "    DBG: in Interpreter::visitLiteralExpression, returning" << std::endl;
-	// TODO: issue printing booleans ("print true;" fails)
+	std::cout << "    DBG: in Interpreter::visitLiteralExpr, returning" << std::endl;
 	return expr.obj;
 }
 
@@ -80,7 +79,6 @@ void Interpreter::checkNumberOperands(Token& oper, LoxObject& left, LoxObject& r
 
 std::any Interpreter::visitBinaryExpr(Binary& expr) {
 	std::cout << "    DBG: inside Interpreter::visitBinaryExpr" << std::endl;
-	// TODO: fix (we're trying to cast to LoxObject* instead of LoxObject&--invalid
 	std::any eval_left = evaluate(expr.left);
 	std::any eval_right = evaluate(expr.right);
 	LoxObject* dbg_e = new LoxObject();
@@ -165,10 +163,11 @@ std::any Interpreter::visitExpressionStmt(Expression& stmt) {
 }
 
 std::any Interpreter::visitPrintStmt(Print& stmt) {
+	std::cout << "DBG: in visit print statement:" << std::endl;
 	std::any value = evaluate(stmt.expr);
 	// TODO: is it a LoxObject?
 	// TODO: refactor into stringify, which was developed in the Evaluating Expressions chapter?
-	std::cout << "dbg: PRINT STATEMENT VISITED:" << std::endl;
+	std::cout << "DBG: PRINT STATEMENT VISITED:" << std::endl;
 	std::cout << std::any_cast<LoxObject>(value).toString() << std::endl;
 	// TODO: should return nullptr?
 	return nullptr;
@@ -183,17 +182,6 @@ void Interpreter::interpret(std::vector<Stmt*>& statements) {
 		for (Stmt* stmt : statements) {
 			execute(*stmt);
 		}
-		/*std::cout << "  DBG: Evaluating..." << std::endl;
-		// TODO: figure out bad_any_cast
-		std::any value = evaluate(expr);
-		//evaluate(expr);
-		// TODO: actually output the value
-		std::cout << "  DBG: Evaluation finished" << std::endl;
-		std::cout << "  DBG: Final value type: " << typeid(value).name() << std::endl;
-		// The return value SHOULD be a LoxObject
-		// TODO: catch errors
-		// Print the return value
-		std::cout << std::any_cast<LoxObject>(value).toString() << std::endl;*/
 	} catch (RuntimeError& r) {
 		Lox::error(&r.token, r.message);
 	}

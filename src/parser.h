@@ -178,12 +178,12 @@ private:
 
 	Expr* primary() {
 		if (match(TokenType::False)) {
-			LoxObject res(0.0); // The book uses true and false, but our LoxObject stores only numbers and strings, no official booleans
-			return new Literal(res);
+			LoxObject* res = new LoxObject(0.0); // The book uses true and false, but our LoxObject stores only numbers and strings, no official booleans
+			return new Literal(*res);
 		}
 		if (match(TokenType::True)) {
-			LoxObject res(1.0);
-			return new Literal(res);
+			LoxObject* res = new LoxObject(1.0);
+			return new Literal(*res);
 		}
 		if (match(TokenType::Nil)) {
 			LoxObject res;
@@ -207,7 +207,7 @@ private:
 		// Expands to the equality rule (this is a recursive system)
 		return equality();
 	}
-	
+
 	// Consume a specific token
 	Token* consume(TokenType type, std::string message) {
 		if (check(type)) return advance();
@@ -247,16 +247,14 @@ private:
 	Print* printStatement() {
 		Expr* value = expression();
 		consume(TokenType::Semicolon, "Expect ';' after value.");
-		// TODO: use pointer or reference, instead of just Stmt?
-		Print* res = new Print(*value);
-		return res;
+		std::cout << "  DBG: print statement expression is: " << typeid(value).name() << std::endl;
+		return new Print(*value);
 	}
 
 	Expression* expressionStatement() {
 		Expr* expr = expression();
 		consume(TokenType::Semicolon, "Expect ';' after expression.");
-		Expression* res = new Expression(*expr);
-		return res;
+		return new Expression(*expr);
 	}
 
 	Stmt* statement() {

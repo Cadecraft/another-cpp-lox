@@ -9,7 +9,6 @@
 class AstPrinter : public Visitor {
 public:
 	std::string print(Expr& expr) {
-		//return expr.dbg_accept(this);
 		std::cout << "    DBG: inside AstPrinter::print" << std::endl;
 		std::string s = std::any_cast<std::string>(expr.accept(this));
 		std::cout << "    DBG: finished AstPrinter::print" << std::endl;
@@ -46,7 +45,6 @@ public:
 	std::any visitUnaryExpr(Unary& expr) {
 		std::cout << "    DBG: inside AstPrinter::visitUnaryExpr" << std::endl;
 		std::cout << "    DBG: expr is of type: " << typeid(expr).name() << std::endl;
-		//Expr* z = (expr.right);
 		std::cout << "    DBG: expr right is of type: " << typeid(expr.right).name() << std::endl;
 		std::string res = parenthesize(expr.op.lexeme, expr.right);
 		std::cout << "    DBG: finished AstPrinter::visitUnaryExpr" << std::endl;
