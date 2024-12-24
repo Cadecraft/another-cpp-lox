@@ -59,7 +59,8 @@ void Scanner::string() {
 	// The closing "
 	advance();
 	// Trim surrounding quotes
-	std::string value = source.substr(start + 1, current - start);
+	// Subtract two to remove the quote (since based on length)
+	std::string value = source.substr(start + 1, current - start - 2);
 	addToken(TokenType::String, value);
 }
 
