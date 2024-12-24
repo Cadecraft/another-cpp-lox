@@ -78,6 +78,7 @@ void Lox::error(Token* token, std::string message) {
 	} else {
 		report(token->line, " at '" + token->lexeme + "'", message);
 	}
+	hadError = true; // Added this line
 }
 
 void Lox::error(int line, std::string message) {
@@ -103,7 +104,12 @@ int Lox::run(std::string s) {
 
 	// Step 2: parse
 	Parser parser(tokens);
-	std::vector<Stmt*> statements = parser.parse();
+	std::vector<Stmt*> statements;
+	try {
+		 statements = parser.parse();
+	} catch(std::runtime_error& err) {
+
+	}
 	// Stop if there was a syntax error
 	if (hadError) return 0;
 	// DEBUG: Print the finished expression
