@@ -12,18 +12,18 @@ private:
 public:
 	// Define a new variable (also allows a variable to be redefined)
 	void define(std::string name, LoxObject value) {
-		values[name] = value; // TODO: copying? referencing?
+		values[name] = value;
 	}
 
 	// Get the value of a variable
 	LoxObject get(Token& name) {
-		// TODO: are the lexemes always correct?
 		if (values.find(name.lexeme) != values.end()) {
 			// Return a copy
 			LoxObject res(values[name.lexeme]);
 			return res;
 		}
 		// Failed
+		// TODO: catch and report this error
 		throw std::runtime_error("Undefined variable '" + name.lexeme + "'.");
 	}
 };
