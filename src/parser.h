@@ -192,6 +192,9 @@ private:
 		if (match(TokenType::Number, TokenType::String)) {
 			return new Literal(previous()->literal);
 		}
+		if (match(TokenType::Identifier)) {
+			return new Variable(*previous());
+		}
 		if (match(TokenType::LeftParen)) {
 			Expr* expr = expression();
 			consume(TokenType::RightParen, "Expect ')' after expression.");
@@ -267,6 +270,29 @@ private:
 		return res;
 	}
 
+	Stmt* varDeclaration() {
+		Token* name = consume(TokenType::Identifier, "Expect variable name.");
+		Expr* initializer = nullptr;
+		if (match(TokenType::Equal)) {
+			initializer = expression();
+		}
+		consume(TokenType::Semicolon, "Expect ';' after variable declaration.");
+		return new Var(*name, initializer);
+	}
+
+	Stmt* declaration() {
+		try {
+			if (match(TokenType::Var)) return varDeclaration();
+			// Doesn't match a variable, so assume other statement
+			return statement();
+		} catch (std::runtime_error& err) {
+			// TODO: instead of runtime_error, use ParseError??
+			synchronize();
+			// TODO: does returning nullptr make sense here?
+			return nullptr;
+		}
+	}
+
 public:
 	Parser(std::vector<Token*>& tokens) : tokens(tokens) {
 		// The tokens are initialized in the header
@@ -276,10 +302,11 @@ public:
 	std::vector<Stmt*> parse() {
 		std::vector<Stmt*> statements;
 		while (!isAtEnd()) {
-			statements.push_back(statement());
+			statements.push_back(declaration());
 		}
 		return statements;
 
+		// TODO: remove this old code
 		/*try {
 			return expression();
 		} catch (const std::runtime_error& e) {

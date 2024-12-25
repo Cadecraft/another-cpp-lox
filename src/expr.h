@@ -9,9 +9,11 @@ class Binary;
 class Grouping;
 class Literal;
 class Unary;
+class Variable;
 
 class Expression;
 class Print;
+class Var;
 
 class Visitor {
 public:
@@ -19,8 +21,10 @@ public:
 	virtual std::any visitGroupingExpr(Grouping& expr);
 	virtual std::any visitLiteralExpr(Literal& expr);
 	virtual std::any visitUnaryExpr(Unary& expr);
+	virtual std::any visitVariableExpr(Variable& expr);
 	virtual std::any visitExpressionStmt(Expression& stmt);
 	virtual std::any visitPrintStmt(Print& stmt);
+	virtual std::any visitVarStmt(Var& stmt);
 };
 
 class Expr {
@@ -64,6 +68,15 @@ public:
 	Expr& right;
 
 	Unary(Token& op, Expr& right);
+
+	std::any accept(Visitor* visitor);
+};
+
+class Variable : public Expr {
+public:
+	Token& name;
+
+	Variable(Token& name);
 
 	std::any accept(Visitor* visitor);
 };

@@ -4,6 +4,7 @@
 #include "runtimeerror.h"
 #include "loxobject.h"
 #include "structures.h"
+#include "environment.h"
 #include <string>
 #include <any>
 #include <iostream>
@@ -11,6 +12,9 @@
 #include <vector>
 
 class Interpreter : public Visitor {
+private:
+	Environment environment;
+
 public:
 	// Visit a literal (return a LoxObject)
 	std::any visitLiteralExpr(Literal& expr);
@@ -24,11 +28,17 @@ public:
 	// Visit a unary expression (return a LoxObject)
 	std::any visitUnaryExpr(Unary& expr);
 
+	// Visit a variable expression
+	std::any visitVariableExpr(Variable& expr);
+
 	// Visit an expression statement (return null)
 	std::any visitExpressionStmt(Expression& stmt);
 
 	// Visit a print statement (return null)
 	std::any visitPrintStmt(Print& stmt);
+
+	// Visit a var statement
+	std::any visitVarStmt(Var& stmt);
 
 	// Check if an object is truthy or not
 	bool isTruthy(LoxObject& obj);

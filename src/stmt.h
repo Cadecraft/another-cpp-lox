@@ -1,6 +1,7 @@
 #pragma once
 
 #include "expr.h"
+#include "token.h"
 #include <any>
 
 class Visitor;
@@ -26,6 +27,17 @@ public:
 	Expr& expr;
 
 	Print(Expr& expr);
+
+	std::any accept(Visitor* visitor);
+};
+
+class Var : public Stmt {
+public:
+	Token& name;
+	Expr* initializer;
+
+	// TODO: is this valid syntax?
+	Var(Token& name, Expr* initializer);
 
 	std::any accept(Visitor* visitor);
 };

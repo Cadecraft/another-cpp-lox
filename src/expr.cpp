@@ -20,13 +20,21 @@ std::any Visitor::visitUnaryExpr(Unary& expr) {
 	// Do stuff
 	return "the default Visitor visit in expr.cpp was called (unary)";
 }
+std::any Visitor::visitVariableExpr(Variable& expr) {
+	// Do stuff
+	return "the default Visitor visit in expr.cpp was called (variable)";
+}
 std::any Visitor::visitExpressionStmt(Expression& stmt) {
 	// Do stuff
 	return "the default Visitor visit in expr.cpp was called (expression stmt)";
 }
 std::any Visitor::visitPrintStmt(Print& stmt) {
 	// Do stuff
-	return "the default Visitor visit in expr.cpp was called (print)";
+	return "the default Visitor visit in expr.cpp was called (print stmt)";
+}
+std::any Visitor::visitVarStmt(Var& stmt) {
+	// Do stuff
+	return "the default Visitor visit in expr.cpp was called (var stmt)";
 }
 
 // Expr
@@ -59,4 +67,10 @@ std::any Literal::accept(Visitor* visitor) {
 Unary::Unary(Token& op, Expr& right) : op(op), right(right) { }
 std::any Unary::accept(Visitor* visitor) {
 	return visitor->visitUnaryExpr(*this);
+}
+
+// Variable
+Variable::Variable(Token& name) : name(name) { }
+std::any Variable::accept(Visitor* visitor) {
+	return visitor->visitVariableExpr(*this);
 }

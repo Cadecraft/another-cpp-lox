@@ -40,6 +40,10 @@ std::any Interpreter::visitUnaryExpr(Unary& expr) {
 	}
 }
 
+std::any Interpreter::visitVariableExpr(Variable& expr) {
+	return environment.get(expr.name);
+}
+
 bool Interpreter::isTruthy(LoxObject& obj) {
 	if (obj.isEmpty()) {
 		return false;
@@ -171,6 +175,22 @@ std::any Interpreter::visitPrintStmt(Print& stmt) {
 	std::cout << std::any_cast<LoxObject>(value).toString() << std::endl;
 	// TODO: should return nullptr?
 	return nullptr;
+}
+
+std::any Interpreter::visitVarStmt(Var& stmt) {
+	// TODO: check initializer in Var is implemented properly
+	if (stmt.initializer != nullptr) {
+		// TODO: evaluate should return a LoxObject, right?
+		std::any value = evaluate(*stmt.initializer);
+		LoxObject value_obj = std::any_cast<LoxObject>(value);
+		environment.define(stmt.name.lexeme, value_obj);
+		return nullptr;
+	} else {
+		LoxObject value;
+		environment.define(stmt.name.lexeme, value);
+		// Empty
+		return nullptr;
+	}
 }
 
 void Interpreter::execute(Stmt& stmt) {

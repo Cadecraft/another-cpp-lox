@@ -19,6 +19,9 @@ public:
 	// Construct a lox object of type Number
 	LoxObject(double val);
 
+	// Construct a lox object given another lox object (copying)
+	/*LoxObject(const LoxObject& toCopy);*/
+
 	// Get the type
 	LoxObjectType getType();
 
