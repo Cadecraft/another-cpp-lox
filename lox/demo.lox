@@ -1,2 +1,13 @@
 print "Hi, this is a demo!";
 var language = "lox";
+print "The language is called " + language + "!";
+
+print "Here are some numbers:";
+
+var az = 1 * 2 * 3;
+var bz = (9 - 4 / 2) * 3;
+var cz = az + bz;
+
+print az;
+print bz;
+print cz;

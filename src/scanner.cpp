@@ -21,7 +21,7 @@ void Scanner::addToken(TokenType type) {
 // Literal is allowed to be a string, int, or other object (TODO: refactor)
 void Scanner::addToken(TokenType type, LoxObject literal) {
 	// TODO: impl
-	std::string text = source.substr(start, current - start - 1); // TODO: - 1 or + 1?
+	std::string text = source.substr(start, current - start);
 	tokens.push_back(new Token(type, text, literal, line));
 }
 
