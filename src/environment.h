@@ -26,4 +26,15 @@ public:
 		// TODO: catch and report this error
 		throw std::runtime_error("Undefined variable '" + name.lexeme + "'.");
 	}
+
+	// Assign a value to a variable
+	void assign(Token& name, LoxObject value) {
+		if (values.find(name.lexeme) != values.end()) {
+			values[name.lexeme] = value; // value is a copy of the LoxObject
+			return;
+		}
+		// Failed
+		// TODO: catch and report this error
+		throw std::runtime_error("Undefined variable '" + name.lexeme + "'.");
+	}
 };

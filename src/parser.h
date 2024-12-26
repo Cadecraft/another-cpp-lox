@@ -205,10 +205,30 @@ private:
 		throw std::runtime_error("See error reported by lox");
 	}
 
+	// Assignment
+	Expr* assignment() {
+		Expr* expr = equality();
+
+		if (match(TokenType::Equal)) {
+			Token* equals = previous();
+			// Recursion
+			Expr* value = assignment();
+			// LSP error: "Expr is not polymorphic" (should not be an issue, just because of std::any)
+			if (dynamic_cast<Variable*>(expr) != nullptr) {
+				// Is a variable
+				Token* name = &(dynamic_cast<Variable*>(expr)->name);
+				return new Assign(*name, *value);
+			}
+			error(equals, "Invalid assignment target.");
+		}
+
+		return expr;
+	}
+
 	// Expression grammar
 	Expr* expression() {
-		// Expands to the equality rule (this is a recursive system)
-		return equality();
+		// Expands to the assignment, then equality rule (this is a recursive system)
+		return assignment();
 	}
 
 	// Consume a specific token

@@ -31,6 +31,9 @@ public:
 	// Visit a variable expression
 	std::any visitVariableExpr(Variable& expr);
 
+	// Visit an assign expression
+	std::any visitAssignExpr(Assign& expr);
+
 	// Visit an expression statement (return null)
 	std::any visitExpressionStmt(Expression& stmt);
 

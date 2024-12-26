@@ -2,38 +2,33 @@
 #include <string>
 #include <iostream> // For debugging
 
-// Visitor
-// TODO: template necessary?
+// Visitor visit default definitions
+// (These should never be actually used, but are necessary for compilation)
 std::any Visitor::visitBinaryExpr(Binary& expr) {
-	// Do stuff
 	return "the default Visitor visit in expr.cpp was called (binary)";
 }
 std::any Visitor::visitGroupingExpr(Grouping& expr) {
-	// Do stuff
 	return "the default Visitor visit in expr.cpp was called (grouping)";
 }
 std::any Visitor::visitLiteralExpr(Literal& expr) {
-	// Do stuff
 	return "the default Visitor visit in expr.cpp was called (literal)";
 }
 std::any Visitor::visitUnaryExpr(Unary& expr) {
-	// Do stuff
 	return "the default Visitor visit in expr.cpp was called (unary)";
 }
 std::any Visitor::visitVariableExpr(Variable& expr) {
-	// Do stuff
 	return "the default Visitor visit in expr.cpp was called (variable)";
 }
+std::any Visitor::visitAssignExpr(Assign& expr) {
+	return "the default Visitor visit in expr.cpp was called (assign)";
+}
 std::any Visitor::visitExpressionStmt(Expression& stmt) {
-	// Do stuff
 	return "the default Visitor visit in expr.cpp was called (expression stmt)";
 }
 std::any Visitor::visitPrintStmt(Print& stmt) {
-	// Do stuff
 	return "the default Visitor visit in expr.cpp was called (print stmt)";
 }
 std::any Visitor::visitVarStmt(Var& stmt) {
-	// Do stuff
 	return "the default Visitor visit in expr.cpp was called (var stmt)";
 }
 
@@ -73,4 +68,10 @@ std::any Unary::accept(Visitor* visitor) {
 Variable::Variable(Token& name) : name(name) { }
 std::any Variable::accept(Visitor* visitor) {
 	return visitor->visitVariableExpr(*this);
+}
+
+// Assign
+Assign::Assign(Token& name, Expr& value) : name(name), value(value) { }
+std::any Assign::accept(Visitor* visitor) {
+	return visitor->visitAssignExpr(*this);
 }

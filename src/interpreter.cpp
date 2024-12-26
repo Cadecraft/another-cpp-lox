@@ -44,6 +44,14 @@ std::any Interpreter::visitVariableExpr(Variable& expr) {
 	return environment.get(expr.name);
 }
 
+std::any Interpreter::visitAssignExpr(Assign& expr) {
+	std::any eval_value = evaluate(expr.value);
+	LoxObject value = std::any_cast<LoxObject&>(eval_value); 
+	environment.assign(expr.name, value);
+	// No return needed
+	return nullptr;
+}
+
 bool Interpreter::isTruthy(LoxObject& obj) {
 	if (obj.isEmpty()) {
 		return false;
