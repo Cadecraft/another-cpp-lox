@@ -12,6 +12,7 @@ class Unary;
 class Variable;
 class Assign;
 
+class Block; // A statement containing a list of statements
 class Expression;
 class Print;
 class Var;
@@ -24,6 +25,7 @@ public:
 	virtual std::any visitUnaryExpr(Unary& expr);
 	virtual std::any visitVariableExpr(Variable& expr);
 	virtual std::any visitAssignExpr(Assign& expr);
+	virtual std::any visitBlockStmt(Block& stmt);
 	virtual std::any visitExpressionStmt(Expression& stmt);
 	virtual std::any visitPrintStmt(Print& stmt);
 	virtual std::any visitVarStmt(Var& stmt);

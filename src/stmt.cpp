@@ -10,6 +10,13 @@ std::any Stmt::accept(Visitor* visitor) {
 	return s;
 }
 
+// Block
+Block::Block(std::vector<Stmt*> statements) : statements(statements) {}
+std::any Block::accept(Visitor* visitor) {
+	std::cout << "DBG: the Block Stmt accept was called" << std::endl;
+	return visitor->visitBlockStmt(*this);
+}
+
 // Expression
 Expression::Expression(Expr& expr) : expr(expr) {}
 std::any Expression::accept(Visitor* visitor) {

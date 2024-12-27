@@ -280,10 +280,22 @@ private:
 		return new Expression(*expr);
 	}
 
+	std::vector<Stmt*> block() {
+		std::vector<Stmt*> statements;
+		while (!check(TokenType::RightBrace) && !isAtEnd()) {
+			statements.push_back(declaration());
+		}
+		consume(TokenType::RightBrace, "Expect '}' after block.");
+		return statements;
+	}
+
 	Stmt* statement() {
 		if (match(TokenType::Print)) {
 			Print* res = printStatement();
 			return res;
+		}
+		if (match(TokenType::LeftBrace)) {
+			return new Block(block());
 		}
 		// Doesn't match any known statement, so assume expression statement
 		Expression* res = expressionStatement();

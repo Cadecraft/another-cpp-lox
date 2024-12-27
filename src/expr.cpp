@@ -22,6 +22,9 @@ std::any Visitor::visitVariableExpr(Variable& expr) {
 std::any Visitor::visitAssignExpr(Assign& expr) {
 	return "the default Visitor visit in expr.cpp was called (assign)";
 }
+std::any Visitor::visitBlockStmt(Block& stmt) {
+	return "the default Visitor visit in expr.cpp was called (block stmt)";
+}
 std::any Visitor::visitExpressionStmt(Expression& stmt) {
 	return "the default Visitor visit in expr.cpp was called (expression stmt)";
 }

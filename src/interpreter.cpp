@@ -168,6 +168,30 @@ std::any Interpreter::visitBinaryExpr(Binary& expr) {
 	}
 }
 
+void Interpreter::executeBlock(std::vector<Stmt*>& statements, Environment newEnviron) {
+	Environment previous = environment;
+	try {
+		environment = newEnviron;
+		for (Stmt* statement : statements) {
+			execute(*statement);
+		}
+		// Always clean up the resources
+		environment = previous;
+	} catch(std::runtime_error& e) {
+		// The environment will now be re-updated back to the previous one
+		// Always clean up the resources (NOTE: in the book, this was done through a `finally` block)
+		environment = previous;
+		throw e;
+	}
+}
+
+std::any Interpreter::visitBlockStmt(Block& stmt) {
+	Environment newEnviron(environment);
+	executeBlock(stmt.statements, newEnviron);
+	// TODO: should return nullptr?
+	return nullptr;
+}
+
 std::any Interpreter::visitExpressionStmt(Expression& stmt) {
 	evaluate(stmt.expr);
 	// TODO: should return nullptr?

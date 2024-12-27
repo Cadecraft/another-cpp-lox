@@ -34,6 +34,9 @@ public:
 	// Visit an assign expression
 	std::any visitAssignExpr(Assign& expr);
 
+	// Visit a block statement
+	std::any visitBlockStmt(Block& stmt);
+
 	// Visit an expression statement (return null)
 	std::any visitExpressionStmt(Expression& stmt);
 
@@ -54,6 +57,9 @@ public:
 
 	// Check that the operands are valid, if double
 	void checkNumberOperands(Token& oper, LoxObject& left, LoxObject& right);
+
+	// Execute a block
+	void executeBlock(std::vector<Stmt*>& statements, Environment newEnviron);
 
 	// Execute a statement
 	void execute(Stmt& stmt);
