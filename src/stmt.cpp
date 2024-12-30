@@ -24,6 +24,13 @@ std::any Expression::accept(Visitor* visitor) {
 	return visitor->visitExpressionStmt(*this);
 }
 
+// If
+If::If(Expr& condition, Stmt& thenBranch, Stmt* elseBranch) : condition(condition), thenBranch(thenBranch), elseBranch(elseBranch) {}
+std::any If::accept(Visitor* visitor) {
+	std::cout << "DBG: the If Stmt accept was called" << std::endl;
+	return visitor->visitIfStmt(*this);
+}
+
 // Print
 Print::Print(Expr& expr) : expr(expr) {}
 std::any Print::accept(Visitor* visitor) {

@@ -61,26 +61,12 @@ std::string LoxObject::toString() {
 	// TODO: remove the debugging type message
 	switch (t) {
 	case LoxObjectType::String:
-		// TODO: should not have the debug `str( )` wrapper
-		return "str(" + val_s + ")";
-	case LoxObjectType::Number:
-		// TODO: should not have the debug `num( )` wrapper
-		return "num(" + std::to_string(val_i) + ")";
-	case LoxObjectType::Empty:
-		// TODO: should say "nil"
-		return "(Empty)";
-	default:
-		return "(No valid type)";
-	}
-
-	/*switch (t) {
-	case LoxObjectType::String:
 		return val_s;
 	case LoxObjectType::Number:
 		return std::to_string(val_i);
 	case LoxObjectType::Empty:
-		return "(Empty)";
+		return "nil";
 	default:
 		return "(No valid type)";
-	}*/
+	}
 }

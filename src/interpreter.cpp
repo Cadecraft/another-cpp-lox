@@ -1,10 +1,11 @@
 #include "interpreter.h"
 #include "stmt.h"
+#include "debugprinter.h"
 
 #include "lox.h"
 
 std::any Interpreter::visitLiteralExpr(Literal& expr) {
-	std::cout << "    DBG: in Interpreter::visitLiteralExpr, returning" << std::endl;
+	DebugPrinter::print("in Interpreter::visitLiteralExpr, returning");
 	return expr.obj;
 }
 
@@ -13,9 +14,9 @@ std::any Interpreter::visitGroupingExpr(Grouping& expr) {
 }
 
 std::any Interpreter::evaluate(Expr& expr) {
-	std::cout << "    DBG: in evaluate, about to expr.accept (type: " << typeid(expr).name() << ")" << std::endl;
+	DebugPrinter::print("in evaluate, about to expr.accept; type: " + DebugPrinter::to_string(typeid(expr).name()));
 	std::any res = expr.accept(this);
-	std::cout << "    DBG: in evaluate, about to return (type: " << typeid(res).name() << ")" << std::endl;
+	DebugPrinter::print("in evaluate, about to return; type: " + DebugPrinter::to_string(typeid(res).name()));
 	return res;
 }
 
@@ -90,20 +91,15 @@ void Interpreter::checkNumberOperands(Token& oper, LoxObject& left, LoxObject& r
 }
 
 std::any Interpreter::visitBinaryExpr(Binary& expr) {
-	std::cout << "    DBG: inside Interpreter::visitBinaryExpr" << std::endl;
+	DebugPrinter::print("inside Interpreter::visitBinaryExpr");
 	std::any eval_left = evaluate(expr.left);
 	std::any eval_right = evaluate(expr.right);
-	LoxObject* dbg_e = new LoxObject();
-	std::any dbg_type_tester = dbg_e;
-	std::any dbg_type_tester_2 = *dbg_e;
-	std::cout << "    DBG: finished evaluating, about to any cast" << std::endl;
-	std::cout << "    DBG: Type of eval_left: " << eval_left.type().name() << std::endl;
-	std::cout << "    DBG: Type of dbg_type_tester: " << dbg_type_tester.type().name() << std::endl;
-	std::cout << "    DBG: Type of dbg_type_tester_2: " << dbg_type_tester_2.type().name() << std::endl;
-	std::cout << "    DBG: Type of eval_right: " << eval_right.type().name() << std::endl;
+	DebugPrinter::print("finished evaluating, about to any cast");
+	DebugPrinter::print("type of eval_left: " + DebugPrinter::to_string(eval_left.type().name()), 3);
+	DebugPrinter::print("type of eval_right: " + DebugPrinter::to_string(eval_right.type().name()), 3);
 	LoxObject* left = &std::any_cast<LoxObject&>(eval_left);
 	LoxObject* right = &std::any_cast<LoxObject&>(eval_right);
-	std::cout << "    DBG: finished any casts in Interpreter::visitBinaryExpr" << std::endl;
+	DebugPrinter::print("finished any casts in Interpreter::visitBinaryExpr");
 	switch (expr.op.type) {
 	case TokenType::Slash: {
 		checkNumberOperands(expr.op, *right, *left);
@@ -198,13 +194,24 @@ std::any Interpreter::visitExpressionStmt(Expression& stmt) {
 	return nullptr;
 }
 
+std::any Interpreter::visitIfStmt(If& stmt) {
+	std::any condition_value = evaluate(stmt.condition);
+	LoxObject condition_value_obj = std::any_cast<LoxObject>(condition_value);
+	if (isTruthy(condition_value_obj)) {
+		execute(stmt.thenBranch);
+	} else if (stmt.elseBranch != nullptr) { // TODO: FIX by making a POINTER to the else branch
+		execute(*(stmt.elseBranch));
+	}
+	// TODO: should return nullptr?
+	return nullptr;
+}
+
 std::any Interpreter::visitPrintStmt(Print& stmt) {
-	std::cout << "DBG: in visit print statement:" << std::endl;
+	DebugPrinter::print("in visit print statement:");
 	std::any value = evaluate(stmt.expr);
 	// TODO: is it a LoxObject?
 	// TODO: refactor into stringify, which was developed in the Evaluating Expressions chapter?
-	std::cout << "DBG: PRINT STATEMENT VISITED:" << std::endl;
-	std::cout << std::any_cast<LoxObject>(value).toString() << std::endl;
+	DebugPrinter::print("PRINT statement visited:" + std::any_cast<LoxObject>(value).toString());
 	// TODO: should return nullptr?
 	return nullptr;
 }

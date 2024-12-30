@@ -28,6 +28,9 @@ std::any Visitor::visitBlockStmt(Block& stmt) {
 std::any Visitor::visitExpressionStmt(Expression& stmt) {
 	return "the default Visitor visit in expr.cpp was called (expression stmt)";
 }
+std::any Visitor::visitIfStmt(If& stmt) {
+	return "the default Visitor visit in expr.cpp was called (if stmt)";
+}
 std::any Visitor::visitPrintStmt(Print& stmt) {
 	return "the default Visitor visit in expr.cpp was called (print stmt)";
 }

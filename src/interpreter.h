@@ -40,6 +40,9 @@ public:
 	// Visit an expression statement (return null)
 	std::any visitExpressionStmt(Expression& stmt);
 
+	// Visit an if statement
+	std::any visitIfStmt(If& stmt);
+
 	// Visit a print statement (return null)
 	std::any visitPrintStmt(Print& stmt);
 

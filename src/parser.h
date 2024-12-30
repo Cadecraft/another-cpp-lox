@@ -6,6 +6,7 @@
 #include "loxobject.h"
 #include "lox.h"
 #include "stmt.h"
+#include "debugprinter.h"
 
 #include <vector>
 #include <string>
@@ -166,10 +167,12 @@ private:
 	// Unary
 	Expr* unary() {
 		if (match(TokenType::Bang, TokenType::Minus)) {
-			std::cout << "      DBG: parser: matched Bang or Minus" << std::endl;
+			//std::cout << "      DBG: parser: matched Bang or Minus" << std::endl;
+			DebugPrinter::print("parser: matched Bang or Minus");
 			Token* op = previous();
 			Expr& right = *unary(); // NOTE: corrected from `Expr right` to `Expr& right` due to ownership issues
-			std::cout << "      DBG: parser: right expr made, of type " << typeid(right).name() << std::endl;
+			//std::cout << "      DBG: parser: right expr made, of type " << typeid(right).name() << std::endl;
+			DebugPrinter::print("parser: right expr made, of type: " + DebugPrinter::to_string(typeid(right).name()));
 			return new Unary(*op, right);
 		}
 		return primary();
@@ -270,7 +273,8 @@ private:
 	Print* printStatement() {
 		Expr* value = expression();
 		consume(TokenType::Semicolon, "Expect ';' after value.");
-		std::cout << "  DBG: print statement expression is: " << typeid(value).name() << std::endl;
+		//std::cout << "  DBG: print statement expression is: " << typeid(value).name() << std::endl; // TODO: remove
+		DebugPrinter::print("print statement expression is: " + DebugPrinter::to_string(typeid(value).name()));
 		return new Print(*value);
 	}
 
@@ -289,7 +293,25 @@ private:
 		return statements;
 	}
 
+	If* ifStatement() {
+		// Get the condition
+		consume(TokenType::LeftParen, "Expect '(' after 'if'.");
+		Expr* condition = expression();
+		consume(TokenType::RightParen, "Expect ')' after if condition.");
+		// Get the branches
+		Stmt* thenBranch = statement();
+		Stmt* elseBranch = nullptr;
+		if (match(TokenType::Else)) {
+			elseBranch = statement();
+		}
+		return new If(*condition, *thenBranch, elseBranch);
+	}
+
 	Stmt* statement() {
+		if (match(TokenType::If)) {
+			If* res = ifStatement();
+			return res;
+		}
 		if (match(TokenType::Print)) {
 			Print* res = printStatement();
 			return res;

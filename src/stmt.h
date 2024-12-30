@@ -32,6 +32,19 @@ public:
 	std::any accept(Visitor* visitor);
 };
 
+class If : public Stmt {
+public:
+	Expr& condition;
+	Stmt& thenBranch;
+	Stmt* elseBranch; // NOTE: the else branch could be nonexistent (nullptr)
+
+	// TODO: should these actually claim ownership of the items, instead of taking references?
+	// TODO: ^ for improving/fixing memory management in the future
+	If(Expr& condition, Stmt& thenBranch, Stmt* elseBranch);
+
+	std::any accept(Visitor* visitor);
+};
+
 class Print : public Stmt {
 public:
 	Expr& expr;

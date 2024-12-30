@@ -14,6 +14,7 @@ class Assign;
 
 class Block; // A statement containing a list of statements
 class Expression;
+class If;
 class Print;
 class Var;
 
@@ -27,6 +28,7 @@ public:
 	virtual std::any visitAssignExpr(Assign& expr);
 	virtual std::any visitBlockStmt(Block& stmt);
 	virtual std::any visitExpressionStmt(Expression& stmt);
+	virtual std::any visitIfStmt(If& stmt);
 	virtual std::any visitPrintStmt(Print& stmt);
 	virtual std::any visitVarStmt(Var& stmt);
 };
