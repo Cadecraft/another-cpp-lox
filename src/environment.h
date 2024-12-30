@@ -1,5 +1,6 @@
 #include "loxobject.h"
 #include "token.h"
+#include "runtimeerror.h"
 
 #include <iostream>
 #include <string>
@@ -35,7 +36,7 @@ public:
 		if (enclosing != nullptr) return enclosing->get(name);
 		// Failed to find
 		// TODO: catch and report this error
-		throw std::runtime_error("Undefined variable '" + name.lexeme + "'.");
+		throw RuntimeError(name, ("Undefined variable '" + name.lexeme + "'.").c_str());
 	}
 
 	// Assign a value to a variable
@@ -51,6 +52,7 @@ public:
 		}
 		// Failed to assign overall
 		// TODO: catch and report this error
-		throw std::runtime_error("Undefined variable '" + name.lexeme + "'.");
+		//std::string errorText = "Undefined variable '" + name.lexeme + "'.";
+		throw RuntimeError(name, ("Undefined variable '" + name.lexeme + "'.").c_str());
 	}
 };
