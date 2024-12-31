@@ -60,7 +60,6 @@ std::any Grouping::accept(Visitor* visitor) {
 // Literal
 Literal::Literal(LoxObject& obj) : obj(obj) { }
 std::any Literal::accept(Visitor* visitor) {
-	std::cout << "      DBG: in Literal, accepting a visitor" << std::endl;
 	return visitor->visitLiteralExpr(*this);
 }
 

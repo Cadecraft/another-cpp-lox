@@ -209,9 +209,11 @@ std::any Interpreter::visitIfStmt(If& stmt) {
 std::any Interpreter::visitPrintStmt(Print& stmt) {
 	DebugPrinter::print("in visit print statement:");
 	std::any value = evaluate(stmt.expr);
+	LoxObject castedValue = std::any_cast<LoxObject>(value);
 	// TODO: is it a LoxObject?
 	// TODO: refactor into stringify, which was developed in the Evaluating Expressions chapter?
-	DebugPrinter::print("PRINT statement visited:" + std::any_cast<LoxObject>(value).toString());
+	DebugPrinter::print("PRINT statement visited:" + castedValue.toString());
+	std::cout << castedValue.toString() << std::endl;
 	// TODO: should return nullptr?
 	return nullptr;
 }

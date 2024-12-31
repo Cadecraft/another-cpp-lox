@@ -7,6 +7,7 @@
 #include "expr.h"
 #include "astprinter.h"
 #include "parser.h"
+#include "debugprinter.h"
 
 Interpreter Lox::interpreter;
 
@@ -25,7 +26,7 @@ void Lox::debug() {
 	Grouping grouping(other);
 	Binary root(unary, star, grouping);
 	AstPrinter printer;
-	std::cout << "Debug printer output: " << printer.print(root) << std::endl;
+	DebugPrinter::print("Debug ast printer output: " + printer.print(root));
 }
 
 int Lox::runFile(std::string path) {
@@ -57,9 +58,9 @@ int Lox::runPrompt() {
 			// User exited
 			return 0;
 		}
-		std::cout << "DBG: runPrompt STARTING RUNNING" << std::endl;
+		DebugPrinter::print("runPrompt STARTING RUNNING");
 		run(line);
-		std::cout << "DBG: runPrompt FINISHED RUNNING" << std::endl;
+		DebugPrinter::print("runPrompt FINISHED RUNNING");
 		// Do not kill the session in the interactive loop
 		hadError = false;
 	}
@@ -88,19 +89,19 @@ void Lox::error(int line, std::string message) {
 
 int Lox::run(std::string s) {
 	// Run
-	std::cout << "DBG: Running: " << std::endl;
-	std::cout << s << std::endl;
+	DebugPrinter::print("Running: ");
+	DebugPrinter::print(s, 3);
 
 	// Step 1: scan into a list of tokens
 	Scanner scanner(s);
 	std::vector<Token*> tokens = scanner.scanTokens();
 
 	// DBG: print the tokens
-	std::cout << "  DBG: Tokens:" << std::endl;
+	// TODO: only iterate over/stringify the tokens if we should debug print
+	DebugPrinter::print("Tokens:");
 	for (auto token : tokens) {
-		std::cout << token->toString() << ", ";
+		DebugPrinter::print(token->toString());
 	}
-	std::cout << std::endl;
 
 	// Step 2: parse
 	Parser parser(tokens);
@@ -108,22 +109,17 @@ int Lox::run(std::string s) {
 	try {
 		 statements = parser.parse();
 	} catch(std::runtime_error& err) {
-
+		// TODO: what to do here?
 	}
 	// Stop if there was a syntax error
 	if (hadError) return 0;
-	// DEBUG: Print the finished expression
-	//AstPrinter printer;
-	// TODO: debug print somewhere else?
-	//std::cout << "  DBG: Printing expression:" << std::endl;
-	//std::cout << printer.print(statements) << std::endl;
 
 	//Interpreter interpreter;
 
 	// Step 3: run the interpreter
-	std::cout << "  DBG: Running interpreter on " << statements.size() << " statements" << std::endl;
-	/*Lox::*/interpreter.interpret(statements);
-	std::cout << "  DBG: Interpreter finished" << std::endl;
+	DebugPrinter::print("Running interpreter on " + std::to_string(statements.size()) + " statements");
+	interpreter.interpret(statements);
+	DebugPrinter::print("Interpreter finished");
 
 	// TODO: clean up memory
 

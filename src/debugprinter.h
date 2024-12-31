@@ -5,7 +5,7 @@
 
 // Print based on whether the debug message mode is set
 
-const bool DEBUG_MESSAGES = true; // Set to true to see debug messages
+const bool DEBUG_MESSAGES = false; // Set to true to see debug messages
 
 class DebugPrinter {
 public:

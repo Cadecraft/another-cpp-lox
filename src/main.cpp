@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 
+#include "debugprinter.h"
 #include "lox.h"
 
 // Entry point for the program
@@ -20,5 +21,5 @@ int main(int argc, const char* argv[]) {
 		// Interactive prompt for script
 		Lox::runPrompt();
 	}
-	std::cout << "DBG: MAIN FINISHED" << std::endl;
+	DebugPrinter::print("MAIN FINISHED");
 }
