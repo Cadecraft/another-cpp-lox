@@ -189,8 +189,8 @@ private:
 			return new Literal(*res);
 		}
 		if (match(TokenType::Nil)) {
-			LoxObject res;
-			return new Literal(res);
+			LoxObject* res = new LoxObject();
+			return new Literal(*res);
 		}
 		if (match(TokenType::Number, TokenType::String)) {
 			return new Literal(previous()->literal);
@@ -208,9 +208,35 @@ private:
 		throw std::runtime_error("See error reported by lox");
 	}
 
+	// And
+	Expr* and_expr() {
+		Expr* expr = equality();
+
+		while (match(TokenType::And)) {
+			Token* op = previous();
+			Expr* right = equality();
+			expr = new Logical(*expr, *op, *right);
+		}
+
+		return expr;
+	}
+
+	// Or
+	Expr* or_expr() {
+		Expr* expr = and_expr();
+
+		while (match(TokenType::Or)) {
+			Token* op = previous();
+			Expr* right = and_expr();
+			expr = new Logical(*expr, *op, *right);
+		}
+
+		return expr;
+	}
+
 	// Assignment
 	Expr* assignment() {
-		Expr* expr = equality();
+		Expr* expr = or_expr();
 
 		if (match(TokenType::Equal)) {
 			Token* equals = previous();

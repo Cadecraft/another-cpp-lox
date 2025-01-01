@@ -8,6 +8,7 @@
 class Binary;
 class Grouping;
 class Literal;
+class Logical;
 class Unary;
 class Variable;
 class Assign;
@@ -23,6 +24,7 @@ public:
 	virtual std::any visitBinaryExpr(Binary& expr);
 	virtual std::any visitGroupingExpr(Grouping& expr);
 	virtual std::any visitLiteralExpr(Literal& expr);
+	virtual std::any visitLogicalExpr(Logical& expr);
 	virtual std::any visitUnaryExpr(Unary& expr);
 	virtual std::any visitVariableExpr(Variable& expr);
 	virtual std::any visitAssignExpr(Assign& expr);
@@ -65,6 +67,17 @@ public:
 	LoxObject& obj;
 
 	Literal(LoxObject& obj);
+
+	std::any accept(Visitor* visitor);
+};
+
+class Logical : public Expr {
+public:
+	Expr& left;
+	Token& op;
+	Expr& right;
+
+	Logical(Expr& left, Token& op, Expr& right);
 
 	std::any accept(Visitor* visitor);
 };

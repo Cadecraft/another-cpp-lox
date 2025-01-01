@@ -25,6 +25,9 @@ public:
 	// Evaluate an expression
 	std::any evaluate(Expr& expr);
 
+	// Visit a logical expression
+	std::any visitLogicalExpr(Logical& expr);
+
 	// Visit a unary expression (return a LoxObject)
 	std::any visitUnaryExpr(Unary& expr);
 

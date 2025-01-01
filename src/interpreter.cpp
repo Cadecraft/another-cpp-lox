@@ -20,6 +20,20 @@ std::any Interpreter::evaluate(Expr& expr) {
 	return res;
 }
 
+std::any Interpreter::visitLogicalExpr(Logical& expr) {
+	std::any eval_left = evaluate(expr.left);
+	LoxObject left = std::any_cast<LoxObject&>(eval_left);
+	// Short circuit: only evaluate the right if necessary
+	if (expr.op.type == TokenType::Or) {
+		if (isTruthy(left)) return left;
+	} else {
+		if (!isTruthy(left)) return left;
+	}
+	std::any eval_right = evaluate(expr.right);
+	LoxObject right = std::any_cast<LoxObject&>(eval_right);
+	return right;
+}
+
 std::any Interpreter::visitUnaryExpr(Unary& expr) {
 	std::any eval_right = evaluate(expr.right);
 	LoxObject* right = &std::any_cast<LoxObject&>(eval_right);

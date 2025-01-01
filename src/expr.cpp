@@ -13,6 +13,9 @@ std::any Visitor::visitGroupingExpr(Grouping& expr) {
 std::any Visitor::visitLiteralExpr(Literal& expr) {
 	return "the default Visitor visit in expr.cpp was called (literal)";
 }
+std::any Visitor::visitLogicalExpr(Logical& expr) {
+	return "the default Visitor visit in expr.cpp was called (logical)";
+}
 std::any Visitor::visitUnaryExpr(Unary& expr) {
 	return "the default Visitor visit in expr.cpp was called (unary)";
 }
@@ -61,6 +64,12 @@ std::any Grouping::accept(Visitor* visitor) {
 Literal::Literal(LoxObject& obj) : obj(obj) { }
 std::any Literal::accept(Visitor* visitor) {
 	return visitor->visitLiteralExpr(*this);
+}
+
+// Logical
+Logical::Logical(Expr& left, Token& op, Expr& right) : left(left), op(op), right(right) {}
+std::any Logical::accept(Visitor* visitor) {
+	return visitor->visitLogicalExpr(*this);
 }
 
 // Unary
