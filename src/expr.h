@@ -5,6 +5,7 @@
 #include "stmt.h"
 #include <any>
 
+// Declare the expressions
 class Binary;
 class Grouping;
 class Literal;
@@ -13,11 +14,21 @@ class Unary;
 class Variable;
 class Assign;
 
+// Declare the statements
 class Block; // A statement containing a list of statements
 class Expression;
 class If;
 class Print;
 class Var;
+class While;
+
+// NOTE: adding an expression or statement type
+// 1. Add the expression in this expr header or the statement in the stmt header
+// 2. Implement it in the corresponding cpp file
+// 3. Forward-declare it above
+// 4. Add a visitor method below
+// 5. Implement the visitor method in the corresponding expr cpp file
+// 6. Implement the feature in the parser/interpreter
 
 class Visitor {
 public:
@@ -33,6 +44,7 @@ public:
 	virtual std::any visitIfStmt(If& stmt);
 	virtual std::any visitPrintStmt(Print& stmt);
 	virtual std::any visitVarStmt(Var& stmt);
+	virtual std::any visitWhileStmt(While& stmt);
 };
 
 class Expr {

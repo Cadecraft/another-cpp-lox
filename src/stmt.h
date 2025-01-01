@@ -59,8 +59,17 @@ public:
 	Token& name;
 	Expr* initializer;
 
-	// TODO: is this valid syntax?
 	Var(Token& name, Expr* initializer);
+
+	std::any accept(Visitor* visitor);
+};
+
+class While : public Stmt {
+public:
+	Expr& condition;
+	Stmt& body;
+
+	While(Expr& condition, Stmt& body);
 
 	std::any accept(Visitor* visitor);
 };

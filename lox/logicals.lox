@@ -1,0 +1,14 @@
+print "Logical expressions:";
+
+print false or false;
+print false or true;
+print true or false;
+print true or true;
+print false and false;
+print false and true;
+print true and false;
+print true and true;
+print true and "no short circuit";
+print false and "this should never print";
+print false or "short circuit";
+print true or "this should never print";

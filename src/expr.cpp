@@ -40,6 +40,9 @@ std::any Visitor::visitPrintStmt(Print& stmt) {
 std::any Visitor::visitVarStmt(Var& stmt) {
 	return "the default Visitor visit in expr.cpp was called (var stmt)";
 }
+std::any Visitor::visitWhileStmt(While& stmt) {
+	return "the default Visitor visit in expr.cpp was called (while stmt)";
+}
 
 // Expr
 // Accept a visitor (see the `visitor pattern`)

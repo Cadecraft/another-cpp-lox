@@ -33,7 +33,9 @@ public:
 			return res;
 		}
 		// Failed to find in this scope: try the outer scope
-		if (enclosing != nullptr) return enclosing->get(name);
+		if (enclosing != nullptr) {
+			return enclosing->get(name);
+		}
 		// Failed to find
 		// TODO: catch and report this error
 		throw RuntimeError(name, ("Undefined variable '" + name.lexeme + "'.").c_str());
@@ -47,6 +49,7 @@ public:
 		}
 		// Failed to assign in this scope: try the outer scope
 		if (enclosing != nullptr) {
+			// TODO: issue: assigning in an inner scope to an enclosing scope doesn't work
 			enclosing->assign(name, value);
 			return;
 		}

@@ -13,9 +13,12 @@
 
 class Interpreter : public Visitor {
 private:
-	Environment environment;
+	Environment* environment;
 
 public:
+	// Construct the interpreter with an initial environment
+	Interpreter();
+
 	// Visit a literal (return a LoxObject)
 	std::any visitLiteralExpr(Literal& expr);
 
@@ -52,6 +55,9 @@ public:
 	// Visit a var statement
 	std::any visitVarStmt(Var& stmt);
 
+	// Visit a while statement
+	std::any visitWhileStmt(While& stmt);
+
 	// Check if an object is truthy or not
 	bool isTruthy(LoxObject& obj);
 
@@ -65,7 +71,7 @@ public:
 	void checkNumberOperands(Token& oper, LoxObject& left, LoxObject& right);
 
 	// Execute a block
-	void executeBlock(std::vector<Stmt*>& statements, Environment newEnviron);
+	void executeBlock(std::vector<Stmt*>& statements, Environment* newEnviron);
 
 	// Execute a statement
 	void execute(Stmt& stmt);

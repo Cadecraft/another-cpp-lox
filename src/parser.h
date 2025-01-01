@@ -333,6 +333,14 @@ private:
 		return new If(*condition, *thenBranch, elseBranch);
 	}
 
+	While* whileStatement() {
+		consume(TokenType::LeftParen, "Expect '(' after 'while'.");
+		Expr* condition = expression();
+		consume(TokenType::RightParen, "Expect ')' after condition.");
+		Stmt* body = statement();
+		return new While(*condition, *body);
+	}
+
 	Stmt* statement() {
 		if (match(TokenType::If)) {
 			If* res = ifStatement();
@@ -340,6 +348,10 @@ private:
 		}
 		if (match(TokenType::Print)) {
 			Print* res = printStatement();
+			return res;
+		}
+		if (match(TokenType::While)) {
+			While* res = whileStatement();
 			return res;
 		}
 		if (match(TokenType::LeftBrace)) {

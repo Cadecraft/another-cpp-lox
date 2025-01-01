@@ -43,3 +43,10 @@ std::any Var::accept(Visitor* visitor) {
 	DebugPrinter::print("the Var Stmt accept was called");
 	return visitor->visitVarStmt(*this);
 }
+
+// While
+While::While(Expr& condition, Stmt& body) : condition(condition), body(body) {}
+std::any While::accept(Visitor* visitor) {
+	DebugPrinter::print("the While Stmt accept was called");
+	return visitor->visitWhileStmt(*this);
+}

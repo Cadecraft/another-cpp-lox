@@ -4,6 +4,10 @@
 
 #include "lox.h"
 
+Interpreter::Interpreter() {
+	environment = new Environment();
+}
+
 std::any Interpreter::visitLiteralExpr(Literal& expr) {
 	DebugPrinter::print("in Interpreter::visitLiteralExpr, returning");
 	return expr.obj;
@@ -56,13 +60,13 @@ std::any Interpreter::visitUnaryExpr(Unary& expr) {
 }
 
 std::any Interpreter::visitVariableExpr(Variable& expr) {
-	return environment.get(expr.name);
+	return environment->get(expr.name);
 }
 
 std::any Interpreter::visitAssignExpr(Assign& expr) {
 	std::any eval_value = evaluate(expr.value);
 	LoxObject value = std::any_cast<LoxObject&>(eval_value); 
-	environment.assign(expr.name, value);
+	environment->assign(expr.name, value);
 	// No return needed
 	return nullptr;
 }
@@ -178,25 +182,28 @@ std::any Interpreter::visitBinaryExpr(Binary& expr) {
 	}
 }
 
-void Interpreter::executeBlock(std::vector<Stmt*>& statements, Environment newEnviron) {
-	Environment previous = environment;
+void Interpreter::executeBlock(std::vector<Stmt*>& statements, Environment* newEnviron) {
+	Environment* previous = environment;
 	try {
 		environment = newEnviron;
 		for (Stmt* statement : statements) {
 			execute(*statement);
 		}
 		// Always clean up the resources
+		// TODO: delete the old environment, handle memory
+		delete environment;
 		environment = previous;
 	} catch(std::runtime_error& e) {
 		// The environment will now be re-updated back to the previous one
 		// Always clean up the resources (NOTE: in the book, this was done through a `finally` block)
+		// TODO: delete the old environment, handle memory
 		environment = previous;
 		throw e;
 	}
 }
 
 std::any Interpreter::visitBlockStmt(Block& stmt) {
-	Environment newEnviron(environment);
+	Environment* newEnviron = new Environment(environment);
 	executeBlock(stmt.statements, newEnviron);
 	// TODO: should return nullptr?
 	return nullptr;
@@ -233,19 +240,36 @@ std::any Interpreter::visitPrintStmt(Print& stmt) {
 }
 
 std::any Interpreter::visitVarStmt(Var& stmt) {
-	// TODO: check initializer in Var is implemented properly
 	if (stmt.initializer != nullptr) {
-		// TODO: evaluate should return a LoxObject, right?
 		std::any value = evaluate(*stmt.initializer);
 		LoxObject value_obj = std::any_cast<LoxObject>(value);
-		environment.define(stmt.name.lexeme, value_obj);
+		environment->define(stmt.name.lexeme, value_obj);
 		return nullptr;
 	} else {
 		LoxObject value;
-		environment.define(stmt.name.lexeme, value);
+		environment->define(stmt.name.lexeme, value);
 		// Empty
 		return nullptr;
 	}
+}
+
+std::any Interpreter::visitWhileStmt(While& stmt) {
+	while (true) {
+		// Should we continue with the loop?
+		// NOTE: in the book, this is implemented with a simple while loop
+		// `while (isTruthy(evaluate(stmt.condition)))`
+		// But in C++ std::any makes things more complicated
+		std::any value = evaluate(stmt.condition);
+		LoxObject value_obj = std::any_cast<LoxObject>(value);
+		if (!isTruthy(value_obj)) {
+			// Finished the loop
+			break;
+		}
+		// Loop body
+		// TODO: FIX: while loop with braces keeps looping infinitely
+		execute(stmt.body);
+	}
+	return nullptr;
 }
 
 void Interpreter::execute(Stmt& stmt) {
