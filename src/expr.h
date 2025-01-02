@@ -51,9 +51,10 @@ class Expr {
 public:
 	// Accept a visitor (see the `visitor pattern`)
 	virtual std::any accept(Visitor* visitor);
-	// TODO: should Expr have a virtual destructor?
 };
 
+// TODO: make it so that these expr classes actually own their parameters (since we just pass them, and they work like a tree),
+// rather than using references, which makes ownership weird
 class Binary : public Expr {
 public:
 	Expr& left;

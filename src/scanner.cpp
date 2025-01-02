@@ -22,7 +22,7 @@ void Scanner::addToken(TokenType type) {
 void Scanner::addToken(TokenType type, LoxObject literal) {
 	// TODO: impl
 	std::string text = source.substr(start, current - start);
-	tokens.push_back(new Token(type, text, literal, line));
+	tokens.push_back(std::make_shared<Token>(type, text, literal, line));
 }
 
 // Check if match, and if so, consume the current character (like conditional version of `advance()`)
@@ -224,7 +224,7 @@ Scanner::Scanner(std::string source) {
 }
 
 // Scan the tokens
-std::vector<Token*> Scanner::scanTokens() {
+std::vector<std::shared_ptr<Token>> Scanner::scanTokens() {
 	while (!isAtEnd()) {
 		// Beginning of next lexeme
 		start = current;
@@ -232,7 +232,7 @@ std::vector<Token*> Scanner::scanTokens() {
 	}
 	// Empty token
 	LoxObject l;
-	tokens.push_back(new Token(TokenType::EndOfFile, "", l, line));
-	std::vector<Token*> res(tokens);
+	tokens.push_back(std::make_shared<Token>(TokenType::EndOfFile, "", l, line));
+	std::vector<std::shared_ptr<Token>> res(tokens);
 	return res;
 }

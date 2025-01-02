@@ -72,6 +72,16 @@ void Lox::report(int line, std::string where, std::string message) {
 	std::cout << "[line " << line << "] Error" << where << ": " << message << std::endl;
 }
 
+// Throw an error (safe)
+void Lox::error(std::shared_ptr<Token> token, std::string message) {
+	if (token->type == TokenType::EndOfFile) {
+		report(token->line, " at end", message);
+	} else {
+		report(token->line, " at '" + token->lexeme + "'", message);
+	}
+	hadError = true; // Added this line
+}
+
 // Throw an error
 void Lox::error(Token* token, std::string message) {
 	if (token->type == TokenType::EndOfFile) {
@@ -94,7 +104,7 @@ int Lox::run(std::string s) {
 
 	// Step 1: scan into a list of tokens
 	Scanner scanner(s);
-	std::vector<Token*> tokens = scanner.scanTokens();
+	std::vector<std::shared_ptr<Token>> tokens = scanner.scanTokens();
 
 	// DBG: print the tokens
 	// TODO: only iterate over/stringify the tokens if we should debug print

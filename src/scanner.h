@@ -4,6 +4,7 @@
 #include <vector>
 #include <map>
 #include <iostream>
+#include <memory>
 
 #include "structures.h"
 #include "token.h"
@@ -12,7 +13,7 @@
 class Scanner {
 private:
 	std::string source;
-	std::vector<Token*> tokens;
+	std::vector<std::shared_ptr<Token>> tokens;
 	std::map<std::string, TokenType> keywords;
 
 	int start;
@@ -67,5 +68,5 @@ public:
 	Scanner(std::string source);
 
 	// Scan the tokens
-	std::vector<Token*> scanTokens();
+	std::vector<std::shared_ptr<Token>> scanTokens();
 };

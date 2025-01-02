@@ -3,6 +3,7 @@
 #include <iostream>
 #include <string>
 #include <fstream>
+#include <memory>
 
 #include "token.h"
 #include "interpreter.h"
@@ -30,6 +31,9 @@ public:
 
 	// Experience an error
 	static void error(int line, std::string message);
+
+	// Experience an error with tokens (safe)
+	static void error(std::shared_ptr<Token> token, std::string message);
 
 	// Experience an error with tokens
 	static void error(Token* token, std::string message);

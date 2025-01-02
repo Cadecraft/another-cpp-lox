@@ -12,6 +12,7 @@
 #include <string>
 #include <iostream>
 #include <typeinfo>
+#include <memory>
 
 // TODO: test and implement, or remove
 /*class ParseError : public std::runtime_error {
@@ -30,7 +31,7 @@ public:
 
 class Parser {
 private:
-	std::vector<Token*>& tokens;
+	std::vector<std::shared_ptr<Token>>& tokens;
 	int current = 0;
 
 	// Check if there are no more tokens to parse
@@ -39,12 +40,12 @@ private:
 	}
 
 	// Check the current token (not yet consumed)
-	Token* peek() {
+	std::shared_ptr<Token> peek() {
 		return tokens[current];
 	}
 
 	// Return the most recently consumed token
-	Token* previous() {
+	std::shared_ptr<Token> previous() {
 		return tokens[current - 1];
 	}
 
@@ -115,7 +116,7 @@ private:
 	}
 
 	// Advance: consume the current token and return it
-	Token* advance() {
+	std::shared_ptr<Token> advance() {
 		if (!isAtEnd()) current++;
 		return previous();
 	}
@@ -124,7 +125,7 @@ private:
 	Expr* equality() {
 		Expr* expr = comparison();
 		while (match(TokenType::BangEqual, TokenType::EqualEqual)) {
-			Token* op = previous();
+			std::shared_ptr<Token> op = previous();
 			Expr* right = comparison();
 			expr = new Binary(*expr, *op, *right);
 		}
@@ -135,7 +136,7 @@ private:
 	Expr* comparison() {
 		Expr* expr = term();
 		while (match(TokenType::Greater, TokenType::GreaterEqual, TokenType::Less, TokenType::LessEqual)) {
-			Token* op = previous();
+			std::shared_ptr<Token> op = previous();
 			Expr* right = term();
 			expr = new Binary(*expr, *op, *right);
 		}
@@ -146,7 +147,7 @@ private:
 	Expr* term() {
 		Expr* expr = factor();
 		while (match(TokenType::Minus, TokenType::Plus)) {
-			Token* op = previous();
+			std::shared_ptr<Token> op = previous();
 			Expr* right = factor();
 			expr = new Binary(*expr, *op, *right);
 		}
@@ -157,7 +158,7 @@ private:
 	Expr* factor() {
 		Expr* expr = unary();
 		while (match(TokenType::Slash, TokenType::Star)) {
-			Token* op = previous();
+			std::shared_ptr<Token> op = previous();
 			Expr* right = unary();
 			expr = new Binary(*expr, *op, *right);
 		}
@@ -169,7 +170,7 @@ private:
 		if (match(TokenType::Bang, TokenType::Minus)) {
 			//std::cout << "      DBG: parser: matched Bang or Minus" << std::endl;
 			DebugPrinter::print("parser: matched Bang or Minus");
-			Token* op = previous();
+			std::shared_ptr<Token> op = previous();
 			Expr& right = *unary(); // NOTE: corrected from `Expr right` to `Expr& right` due to ownership issues
 			//std::cout << "      DBG: parser: right expr made, of type " << typeid(right).name() << std::endl;
 			DebugPrinter::print("parser: right expr made, of type: " + DebugPrinter::to_string(typeid(right).name()));
@@ -213,7 +214,7 @@ private:
 		Expr* expr = equality();
 
 		while (match(TokenType::And)) {
-			Token* op = previous();
+			std::shared_ptr<Token> op = previous();
 			Expr* right = equality();
 			expr = new Logical(*expr, *op, *right);
 		}
@@ -226,7 +227,7 @@ private:
 		Expr* expr = and_expr();
 
 		while (match(TokenType::Or)) {
-			Token* op = previous();
+			std::shared_ptr<Token> op = previous();
 			Expr* right = and_expr();
 			expr = new Logical(*expr, *op, *right);
 		}
@@ -239,13 +240,16 @@ private:
 		Expr* expr = or_expr();
 
 		if (match(TokenType::Equal)) {
-			Token* equals = previous();
+			std::shared_ptr<Token> equals = previous();
 			// Recursion
 			Expr* value = assignment();
 			// LSP error: "Expr is not polymorphic" (should not be an issue, just because of std::any)
 			if (dynamic_cast<Variable*>(expr) != nullptr) {
 				// Is a variable
-				Token* name = &(dynamic_cast<Variable*>(expr)->name);
+				//std::shared_ptr<Token> name = &(dynamic_cast<Variable*>(expr)->name);
+				// TODO: memory issues here? (eventually make the name in Variable a shared ptr
+				// TODO: simply copy the actual value of the name?
+				std::shared_ptr<Token> name = std::make_shared<Token>(Token(dynamic_cast<Variable*>(expr)->name));
 				return new Assign(*name, *value);
 			}
 			error(equals, "Invalid assignment target.");
@@ -261,7 +265,7 @@ private:
 	}
 
 	// Consume a specific token
-	Token* consume(TokenType type, std::string message) {
+	std::shared_ptr<Token> consume(TokenType type, std::string message) {
 		if (check(type)) return advance();
 		// Not of the expected type
 		error(peek(), message);
@@ -269,7 +273,7 @@ private:
 	}
 
 	// Raise an error upwards
-	void error(Token* token, std::string message) {
+	void error(std::shared_ptr<Token> token, std::string message) {
 		Lox::error(token, message);
 		// In the book, return a parse error
 	}
@@ -363,7 +367,7 @@ private:
 	}
 
 	Stmt* varDeclaration() {
-		Token* name = consume(TokenType::Identifier, "Expect variable name.");
+		std::shared_ptr<Token> name = consume(TokenType::Identifier, "Expect variable name.");
 		Expr* initializer = nullptr;
 		if (match(TokenType::Equal)) {
 			initializer = expression();
@@ -386,7 +390,7 @@ private:
 	}
 
 public:
-	Parser(std::vector<Token*>& tokens) : tokens(tokens) {
+	Parser(std::vector<std::shared_ptr<Token>>& tokens) : tokens(tokens) {
 		// The tokens are initialized in the header
 	}
 
