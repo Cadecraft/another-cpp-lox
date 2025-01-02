@@ -249,8 +249,8 @@ private:
 				//std::shared_ptr<Token> name = &(dynamic_cast<Variable*>(expr)->name);
 				// TODO: memory issues here? (eventually make the name in Variable a shared ptr
 				// TODO: simply copy the actual value of the name?
-				std::shared_ptr<Token> name = std::make_shared<Token>(Token(dynamic_cast<Variable*>(expr)->name));
-				return new Assign(*name, *value);
+				Token name(dynamic_cast<Variable*>(expr)->name);
+				return new Assign(name, *value);
 			}
 			error(equals, "Invalid assignment target.");
 		}

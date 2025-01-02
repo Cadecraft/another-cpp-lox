@@ -58,10 +58,10 @@ public:
 class Binary : public Expr {
 public:
 	Expr& left;
-	Token& op;
+	Token op;
 	Expr& right;
 
-	Binary(Expr& left, Token& op, Expr& right);
+	Binary(Expr& left, Token op, Expr& right);
 
 	std::any accept(Visitor* visitor);
 };
@@ -87,39 +87,39 @@ public:
 class Logical : public Expr {
 public:
 	Expr& left;
-	Token& op;
+	Token op;
 	Expr& right;
 
-	Logical(Expr& left, Token& op, Expr& right);
+	Logical(Expr& left, Token op, Expr& right);
 
 	std::any accept(Visitor* visitor);
 };
 
 class Unary : public Expr {
 public:
-	Token& op;
+	Token op;
 	Expr& right;
 
-	Unary(Token& op, Expr& right);
+	Unary(Token op, Expr& right);
 
 	std::any accept(Visitor* visitor);
 };
 
 class Variable : public Expr {
 public:
-	Token& name;
+	Token name;
 
-	Variable(Token& name);
+	Variable(Token name);
 
 	std::any accept(Visitor* visitor);
 };
 
 class Assign : public Expr {
 public:
-	Token& name;
+	Token name;
 	Expr& value;
 
-	Assign(Token& name, Expr& value);
+	Assign(Token name, Expr& value);
 
 	std::any accept(Visitor* visitor);
 };

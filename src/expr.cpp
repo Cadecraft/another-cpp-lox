@@ -52,7 +52,7 @@ std::any Expr::accept(Visitor* visitor) {
 }
 
 // Binary
-Binary::Binary(Expr& left, Token& op, Expr& right) : left(left), op(op), right(right) { }
+Binary::Binary(Expr& left, Token op, Expr& right) : left(left), op(op), right(right) { }
 std::any Binary::accept(Visitor* visitor) {
 	return visitor->visitBinaryExpr(*this);
 }
@@ -70,25 +70,25 @@ std::any Literal::accept(Visitor* visitor) {
 }
 
 // Logical
-Logical::Logical(Expr& left, Token& op, Expr& right) : left(left), op(op), right(right) {}
+Logical::Logical(Expr& left, Token op, Expr& right) : left(left), op(op), right(right) {}
 std::any Logical::accept(Visitor* visitor) {
 	return visitor->visitLogicalExpr(*this);
 }
 
 // Unary
-Unary::Unary(Token& op, Expr& right) : op(op), right(right) { }
+Unary::Unary(Token op, Expr& right) : op(op), right(right) { }
 std::any Unary::accept(Visitor* visitor) {
 	return visitor->visitUnaryExpr(*this);
 }
 
 // Variable
-Variable::Variable(Token& name) : name(name) { }
+Variable::Variable(Token name) : name(name) { }
 std::any Variable::accept(Visitor* visitor) {
 	return visitor->visitVariableExpr(*this);
 }
 
 // Assign
-Assign::Assign(Token& name, Expr& value) : name(name), value(value) { }
+Assign::Assign(Token name, Expr& value) : name(name), value(value) { }
 std::any Assign::accept(Visitor* visitor) {
 	return visitor->visitAssignExpr(*this);
 }
